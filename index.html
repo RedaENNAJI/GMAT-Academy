@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GMAT Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --ink:#172036; --ink-2:#232E4D; --ink-3:#33406A;
+  --paper:#F5F6F9; --white:#FFFFFF; --line:#DCE1EA; --text:#1E2433; --muted:#5D6678;
+  --signal:#F2B705; --q:#2F6FED; --v:#7C4DDB; --di:#0F9B8E; --ok:#1E9E5A; --bad:#D2453F;
+  --ui:'Archivo','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --read:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --r-s:6px; --r-m:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--text);font-family:var(--ui);font-size:16px;line-height:1.5}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--q)}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- Barre du haut ---------- */
+.top{background:var(--ink);color:#fff;position:sticky;top:0;z-index:20}
+.top-in{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:24px;padding:12px 20px;flex-wrap:wrap}
+.brand{font-weight:800;font-stretch:115%;font-size:1.15rem;letter-spacing:.01em;display:flex;align-items:center;gap:10px;cursor:pointer;background:none;border:0;color:#fff;padding:0}
+.brand-mark{width:26px;height:26px;border-radius:4px;background:
+  conic-gradient(var(--signal) 0 25%,var(--ink) 0 50%,var(--signal) 0 75%,var(--ink) 0) 0 0/13px 13px;border:2px solid var(--signal)}
+.nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.nav button{background:none;border:0;color:#C9D0E2;padding:8px 12px;border-radius:var(--r-s);cursor:pointer;font-weight:600}
+.nav button:hover{color:#fff;background:var(--ink-2)}
+.nav button.on{color:var(--ink);background:var(--signal)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 60px}
+h1,h2,h3{font-stretch:110%;line-height:1.15;margin:0 0 .5em}
+h1{font-size:2rem;font-weight:800}
+h2{font-size:1.45rem;font-weight:750}
+h3{font-size:1.1rem;font-weight:700}
+.muted{color:var(--muted)}
+.lead{max-width:62ch}
+
+/* ---------- Héros : le circuit ---------- */
+.hero{background:var(--ink);color:#fff;padding:26px 0 18px}
+.hero-in{max-width:1180px;margin:0 auto;padding:0 20px}
+.hero-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-stretch:118%;margin:0}
+.hero p{color:#B9C2D8;margin:.3em 0 0;max-width:60ch}
+.hero-stat{font-weight:700;color:var(--signal);font-size:1.05rem}
+.circuit{width:100%;height:auto;display:block}
+.circuit .node{cursor:pointer}
+.circuit .node:focus{outline:none}
+.circuit .node:focus-visible .ring{stroke:var(--signal);stroke-width:4}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.85rem;color:#B9C2D8;margin-top:4px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
+
+/* ---------- Panneau d'étape ---------- */
+.panel{background:var(--white);border:1px solid var(--line);border-radius:var(--r-m);padding:26px;margin-top:-6px}
+.panel-head{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.step-num{font-weight:800;font-stretch:120%;font-size:2.6rem;line-height:1;color:var(--ink)}
+.chip{display:inline-block;font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:999px;color:#fff}
+.chip.Q{background:var(--q)} .chip.V{background:var(--v)} .chip.DI{background:var(--di)} .chip.X{background:var(--signal);color:var(--ink)}
+.chip.prio{background:var(--bad)}
+.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:20px}
+.act{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-m);padding:18px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px}
+.act:hover{border-color:var(--ink-3)}
+.act b{font-size:1.05rem}
+.act .st{font-size:.85rem;color:var(--muted)}
+.act .st.done{color:var(--ok);font-weight:700}
+.banner{background:#FFF7DB;border:1px solid #F0D98A;border-radius:var(--r-m);padding:14px 18px;margin:18px 0;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.official{border-top:1px solid var(--line);margin-top:22px;padding-top:18px}
+
+/* ---------- Boutons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:var(--r-s);padding:11px 20px;font-weight:700;cursor:pointer;background:var(--ink);color:#fff;text-decoration:none}
+.btn:hover{background:var(--ink-3)}
+.btn.sig{background:var(--signal);color:var(--ink)} .btn.sig:hover{background:#FFC928}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:#fff}
+.btn.sm{padding:7px 14px;font-size:.9rem}
+.btn.danger{background:var(--bad)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* ---------- Fiches ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:20px}
+.fcard{perspective:1000px;height:210px;cursor:pointer;background:none;border:0;padding:0;text-align:left}
+.fcard-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.fcard.flip .fcard-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r-m);padding:20px;display:flex;flex-direction:column;justify-content:center;overflow:auto}
+.front{background:var(--ink);color:#fff;font-weight:700;font-size:1.1rem;font-stretch:108%}
+.front small{display:block;font-weight:500;color:#9FAAC6;font-size:.8rem;margin-top:12px;font-stretch:100%}
+.back{background:var(--white);border:2px solid var(--ink);transform:rotateY(180deg);font-size:.95rem;line-height:1.55}
+.fcard.seen .front{box-shadow:inset 0 -5px 0 var(--signal)}
+
+/* ---------- Questions ---------- */
+.qbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--ink);color:#fff;padding:10px 20px;border-radius:var(--r-m) var(--r-m) 0 0}
+.qbar .sp{flex:1}
+.timer{font-variant-numeric:tabular-nums;font-weight:800;font-size:1.15rem;background:var(--ink-2);padding:4px 12px;border-radius:var(--r-s)}
+.timer.low{background:var(--bad)}
+.qbox{background:var(--white);border:1px solid var(--line);border-top:0;border-radius:0 0 var(--r-m) var(--r-m);padding:26px}
+.qgrid{display:grid;gap:28px}
+.qgrid.split{grid-template-columns:1fr 1fr}
+@media (max-width:860px){.qgrid.split{grid-template-columns:1fr}}
+.stim{font-family:var(--read);font-size:1.02rem;line-height:1.7;max-height:70vh;overflow:auto;padding-right:8px}
+.stim h4{font-family:var(--ui);margin:0 0 8px}
+.qtext{font-family:var(--read);font-size:1.08rem;line-height:1.65;margin-bottom:18px}
+.qsub{font-family:var(--ui);font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+.ds-st{margin-top:12px}.ds-st p{margin:.35em 0}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--line);border-radius:var(--r-s);padding:11px 14px;cursor:pointer;background:var(--white);text-align:left;font-family:var(--read);font-size:1rem}
+.opt:hover{border-color:var(--ink-3)}
+.opt .L{font-family:var(--ui);font-weight:800;min-width:1.4em;color:var(--muted)}
+.opt.sel{border-color:var(--ink);background:#EEF1F8}
+.opt.sel .L{color:var(--ink)}
+.opt.ok{border-color:var(--ok);background:#E7F6EE}
+.opt.ko{border-color:var(--bad);background:#FCEBEA}
+.opt[disabled]{cursor:default}
+.mtable{width:100%;border-collapse:collapse;font-family:var(--read)}
+.mtable th,.mtable td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:middle}
+.mtable th{font-family:var(--ui);font-size:.85rem;color:var(--muted)}
+.mtable td.c{text-align:center;width:72px}
+.rad{width:22px;height:22px;border-radius:50%;border:2px solid var(--muted);background:var(--white);cursor:pointer;padding:0;display:inline-block}
+.rad.sel{background:var(--ink);border-color:var(--ink);box-shadow:inset 0 0 0 4px var(--white)}
+.rad.ok{border-color:var(--ok);background:var(--ok);box-shadow:inset 0 0 0 4px var(--white)}
+.rad.ko{border-color:var(--bad);background:var(--bad);box-shadow:inset 0 0 0 4px var(--white)}
+.gi p{font-family:var(--read);margin:0 0 14px;line-height:1.9}
+.gi select{border:1.5px solid var(--ink);border-radius:var(--r-s);padding:4px 8px;background:var(--white);font-family:var(--ui)}
+.gi select.ok{border-color:var(--ok);background:#E7F6EE}.gi select.ko{border-color:var(--bad);background:#FCEBEA}
+.dtable{border-collapse:collapse;width:100%;font-family:var(--ui);font-size:.92rem}
+.dtable caption{text-align:left;font-weight:700;margin-bottom:8px}
+.dtable th,.dtable td{border:1px solid var(--line);padding:7px 10px;text-align:right}
+.dtable th:first-child,.dtable td:first-child{text-align:left}
+.dtable th{background:var(--paper)}
+.chart{width:100%;height:auto;font-family:var(--ui)}
+.chart .ct{font-weight:700;font-size:13px;fill:var(--text)} .chart .cl{font-size:11px;fill:var(--muted)} .chart .cv{font-size:11px;font-weight:700;fill:var(--text)}
+.chart .cg{stroke:var(--line)} .chart .cb{fill:var(--di)} .chart .cline{fill:none;stroke:var(--di);stroke-width:2.5} .chart .cdot{fill:var(--di)}
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--ink);margin-bottom:12px}
+.tabs button{border:0;background:var(--paper);padding:7px 14px;border-radius:var(--r-s) var(--r-s) 0 0;cursor:pointer;font-weight:600}
+.tabs button.on{background:var(--ink);color:#fff}
+.feedback{margin-top:18px;padding:16px 18px;border-radius:var(--r-m);border-left:5px solid var(--ok);background:#F0F9F4}
+.feedback.ko{border-left-color:var(--bad);background:#FDF1F0}
+.feedback b{display:block;margin-bottom:4px}
+.qfoot{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;flex-wrap:wrap}
+
+/* ---------- Résultats, listes ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:18px 0}
+.kpi{background:var(--white);border:1px solid var(--line);border-radius:var(--r-m);padding:16px}
+.kpi b{display:block;font-size:1.9rem;font-weight:800;font-stretch:115%;line-height:1.1}
+.kpi span{color:var(--muted);font-size:.88rem}
+.kpi.big{background:var(--ink);color:#fff;border-color:var(--ink)} .kpi.big span{color:#B9C2D8} .kpi.big b{color:var(--signal);font-size:2.4rem}
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--r-m);padding:22px;margin-top:18px}
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar-row{display:grid;grid-template-columns:minmax(150px,260px) 1fr 52px;gap:12px;align-items:center;font-size:.92rem}
+.bar{height:12px;background:var(--paper);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%}
+.review-item{border-bottom:1px solid var(--line);padding:10px 0}
+.review-item summary{cursor:pointer;display:flex;gap:10px;align-items:baseline}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.dot.ok{background:var(--ok)}.dot.ko{background:var(--bad)}
+.expl{font-size:.95rem;background:var(--paper);padding:12px 14px;border-radius:var(--r-s);margin-top:8px}
+table.list{width:100%;border-collapse:collapse;font-size:.93rem}
+table.list th,table.list td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.list th{color:var(--muted);font-weight:600}
+.tag{font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--paper);border:1px solid var(--line);white-space:nowrap}
+.tag.notion{background:#EEF1F8}.tag.temps{background:#FFF7DB}.tag.inattention{background:#FCEBEA}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:600}
+.form input{border:1.5px solid var(--line);border-radius:var(--r-s);padding:9px 10px;background:var(--white)}
+.err{color:var(--bad);font-weight:600}
+.chartbox{position:relative;height:300px}
+
+/* ---------- Examen ---------- */
+.exam-top{background:var(--ink);color:#fff}
+.order-list{display:grid;gap:8px;margin:14px 0}
+.order-list label{display:flex;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:var(--r-s);padding:10px 14px;cursor:pointer;background:var(--white)}
+.order-list input{accent-color:var(--ink)}
+.rv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px;margin:16px 0}
+.rv-grid button{border:1.5px solid var(--line);border-radius:var(--r-s);padding:10px 4px;background:var(--white);cursor:pointer;font-weight:700;position:relative}
+.rv-grid button.mk{border-color:var(--signal);background:#FFF7DB}
+.rv-grid button.na{border-style:dashed;color:var(--muted)}
+.rv-grid button.ed::after{content:'';position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--q)}
+.bookmark.on{background:var(--signal);color:var(--ink)}
+
+/* ---------- Calculatrice ---------- */
+.calc{position:fixed;right:20px;bottom:20px;width:230px;background:var(--ink);border-radius:var(--r-m);padding:12px;z-index:40;box-shadow:0 10px 30px rgba(23,32,54,.35)}
+.calc-d{background:#fff;color:var(--ink);border-radius:var(--r-s);padding:8px 10px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;min-height:2.2em;margin-bottom:8px;overflow-x:auto;white-space:nowrap}
+.calc-k{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.calc-k button{border:0;border-radius:var(--r-s);padding:9px 0;background:var(--ink-2);color:#fff;font-weight:700;cursor:pointer}
+.calc-k button.op{background:var(--ink-3)} .calc-k button.eq{background:var(--signal);color:var(--ink)}
+.calc-h{display:flex;justify-content:space-between;color:#fff;font-weight:700;font-size:.9rem;margin-bottom:8px}
+.calc-h button{background:none;border:0;color:#fff;cursor:pointer;font-size:1rem}
+
+@media (max-width:640px){
+  .wrap{padding:20px 14px 50px}.panel{padding:18px}.qbox{padding:18px}
+  .bar-row{grid-template-columns:110px 1fr 44px}
+  .nav button{padding:6px 9px;font-size:.9rem}
+}
+
+/* ---------- Ajustements après tests visuels ---------- */
+.qbar .btn{background:var(--ink-2);border:1.5px solid var(--ink-3)}
+.qbar .btn:hover{background:var(--ink-3)}
+.qbar .btn.bookmark.on{background:var(--signal);color:var(--ink);border-color:var(--signal)}
+.tabs button{font-family:var(--ui)}
+.mtable td.c,.mtable th.c{width:auto;min-width:96px}
+.qgrid:not(.split)>div{max-width:860px}
+
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <button class="brand" data-act="nav" data-arg="home"><span class="brand-mark" aria-hidden="true"></span>GMAT Academy</button>
+  <nav class="nav" id="nav" aria-label="Navigation principale"></nav>
+</div></header>
+<main id="app"></main>
+<div id="calc"></div>
+<script>
+// ===== Banque de questions : QUANTITATIVE REASONING =====
+// Format : M(id, thème, difficulté 1-3, énoncé HTML, options, index bonne réponse, explication FR)
+function M(id, t, d, q, o, a, e) { return { id, t, d, k: 'mcq', q, o, a, e }; }
+
+const QB_QUANT = [
+// ---------- Arithmétique & propriétés des nombres ----------
+M('a1','arith',1,`What is 15% of 40% of 500?`,[`20`,`25`,`30`,`35`,`60`],2,`40 % de 500 = 200, puis 15 % de 200 = 30. Astuce : 0,15 × 0,4 = 0,06 et 0,06 × 500 = 30.`),
+M('a2','arith',1,`If <i>x</i> is an even integer and <i>y</i> is an odd integer, which of the following must be odd?`,[`<i>xy</i>`,`<i>x</i> + <i>y</i>`,`2<i>y</i>`,`<i>x</i><sup>2</sup>`,`<i>y</i> + 1`],1,`Pair + impair = impair. Les autres sont toujours pairs : un produit contenant un facteur pair est pair, et impair + 1 est pair.`),
+M('a3','arith',2,`What is the remainder when 7<sup>23</sup> is divided by 5?`,[`0`,`1`,`2`,`3`,`4`],3,`7 ≡ 2 (mod 5). Les puissances de 2 modulo 5 suivent le cycle 2, 4, 3, 1 (période 4). 23 = 4×5 + 3, donc on prend le 3e terme du cycle : 3.`),
+M('a4','arith',2,`How many positive divisors does 360 have?`,[`12`,`18`,`20`,`24`,`36`],3,`360 = 2³ × 3² × 5. Nombre de diviseurs = (3+1)(2+1)(1+1) = 24.`),
+M('a5','arith',1,`The price of an item is increased by 20% and the new price is then decreased by 20%. What is the net percent change in the price?`,[`0%`,`4% decrease`,`4% increase`,`2% decrease`,`2% increase`],1,`On multiplie les coefficients : 1,2 × 0,8 = 0,96, soit une baisse de 4 %. Piège classique : les deux 20 % ne s'annulent pas car ils ne portent pas sur la même base.`),
+M('a6','arith',2,`In a club, the ratio of boys to girls is 3 to 5. After 6 more boys join, the ratio becomes 1 to 1. How many girls are in the club?`,[`9`,`12`,`15`,`18`,`20`],2,`Garçons = 3k, filles = 5k. 3k + 6 = 5k donc k = 3 et il y a 15 filles.`),
+M('a7','arith',1,`(0.25 × 0.4) ÷ 0.05 =`,[`0.2`,`2`,`20`,`0.02`,`5`],1,`0,25 × 0,4 = 0,1 et 0,1 ÷ 0,05 = 2.`),
+M('a8','arith',3,`If <i>n</i> is a positive integer and <i>n</i><sup>2</sup> is divisible by 72, what is the largest positive integer that must divide <i>n</i>?`,[`6`,`12`,`24`,`36`,`72`],1,`72 = 2³ × 3². Dans n², chaque exposant est pair, donc n² doit contenir au moins 2⁴ × 3² : n contient au moins 2² × 3 = 12. Vérification : n = 12 donne n² = 144 = 2 × 72.`),
+M('a9','arith',3,`How many zeros are at the end of 50! (the product of the integers from 1 to 50)?`,[`10`,`11`,`12`,`13`,`15`],2,`On compte les facteurs 5 : ⌊50/5⌋ + ⌊50/25⌋ = 10 + 2 = 12. Les facteurs 2 sont toujours plus nombreux.`),
+M('a10','arith',2,`What is the least common multiple of 12, 18, and 30?`,[`60`,`90`,`180`,`360`,`540`],2,`12 = 2²×3, 18 = 2×3², 30 = 2×3×5. PPCM = 2² × 3² × 5 = 180.`),
+M('a11','arith',2,`√50 + √18 =`,[`8√2`,`√68`,`2√17`,`15√2`,`6√2`],0,`√50 = 5√2 et √18 = 3√2, donc la somme vaut 8√2. On ne peut jamais additionner sous la racine : √a + √b ≠ √(a+b).`),
+M('a12','arith',1,`Which of the following is greatest?`,[`3/5`,`5/8`,`7/11`,`2/3`,`9/14`],3,`En décimal : 0,600 ; 0,625 ; 0,636 ; 0,667 ; 0,643. La plus grande est 2/3.`),
+M('a13','arith',3,`If <i>p</i> is a prime number greater than 3, what is the remainder when <i>p</i><sup>2</sup> is divided by 12?`,[`0`,`1`,`3`,`5`,`9`],1,`Tout premier > 3 s'écrit 6k ± 1, donc p² = 36k² ± 12k + 1 : le reste est toujours 1. Vérification rapide : 5² = 25 = 2×12 + 1 ; 7² = 49 = 4×12 + 1.`),
+M('a14','arith',2,`2<sup>10</sup> + 2<sup>10</sup> + 2<sup>10</sup> + 2<sup>10</sup> =`,[`2<sup>40</sup>`,`8<sup>10</sup>`,`2<sup>12</sup>`,`4<sup>40</sup>`,`2<sup>14</sup>`],2,`4 × 2¹⁰ = 2² × 2¹⁰ = 2¹².`),
+M('a15','arith',2,`What is the sum of all multiples of 3 between 1 and 100?`,[`1,584`,`1,617`,`1,650`,`1,683`,`1,700`],3,`3 + 6 + … + 99 = 3 × (1 + 2 + … + 33) = 3 × (33 × 34 / 2) = 3 × 561 = 1 683.`),
+M('a16','arith',1,`If 3/4 of a number is 27, what is 2/3 of the number?`,[`18`,`20`,`24`,`27`,`30`],2,`Le nombre vaut 27 × 4/3 = 36, et 2/3 de 36 = 24.`),
+M('a17','arith',3,`If <i>x</i> and <i>y</i> are positive integers such that 3<i>x</i> + 5<i>y</i> = 52, how many ordered pairs (<i>x</i>, <i>y</i>) are possible?`,[`2`,`3`,`4`,`5`,`6`],1,`52 − 5y doit être un multiple de 3 positif. y = 2 → x = 14 ; y = 5 → x = 9 ; y = 8 → x = 4 ; y = 11 rend 52 − 55 négatif. Il y a donc 3 couples.`),
+M('a18','arith',1,`A stock price rose from $80 to $100. By what percent did it increase?`,[`15%`,`20%`,`25%`,`80%`,`125%`],2,`Hausse de 20 sur une base de 80 : 20/80 = 25 %. Piège : 20 % correspond à 20/100, calculé sur la mauvaise base.`),
+M('a19','arith',2,`What is the units digit of 3<sup>47</sup>?`,[`1`,`3`,`5`,`7`,`9`],3,`Le chiffre des unités des puissances de 3 suit le cycle 3, 9, 7, 1. 47 = 4×11 + 3, donc 3e terme : 7.`),
+M('a20','arith',3,`What is the greatest integer <i>n</i> such that 3<sup><i>n</i></sup> is a factor of 20! ?`,[`6`,`7`,`8`,`9`,`10`],2,`⌊20/3⌋ + ⌊20/9⌋ = 6 + 2 = 8. On compte une fois chaque multiple de 3, puis une fois de plus chaque multiple de 9.`),
+
+// ---------- Algèbre ----------
+M('g1','algebra',1,`If 3<i>x</i> − 7 = 11, what is the value of <i>x</i>?`,[`4`,`5`,`6`,`7`,`18/7`],2,`3x = 18 donc x = 6.`),
+M('g2','algebra',1,`If <i>x</i> + <i>y</i> = 10 and <i>x</i> − <i>y</i> = 4, what is the value of <i>xy</i>?`,[`21`,`24`,`16`,`40`,`14`],0,`En additionnant : 2x = 14, donc x = 7 et y = 3. xy = 21.`),
+M('g3','algebra',2,`Which of the following describes all values of <i>x</i> for which |2<i>x</i> − 3| &lt; 5?`,[`−1 &lt; <i>x</i> &lt; 4`,`<i>x</i> &lt; 4`,`−4 &lt; <i>x</i> &lt; 1`,`<i>x</i> &gt; −1`,`1 &lt; <i>x</i> &lt; 4`],0,`−5 < 2x − 3 < 5, donc −2 < 2x < 8, soit −1 < x < 4.`),
+M('g4','algebra',2,`If <i>x</i><sup>2</sup> − 5<i>x</i> + 6 = 0, what is the sum of all possible values of 2<i>x</i>?`,[`5`,`6`,`10`,`12`,`−10`],2,`(x − 2)(x − 3) = 0, donc x = 2 ou 3, et 2x = 4 ou 6. Somme = 10.`),
+M('g5','algebra',2,`If (<i>a</i> + <i>b</i>)<sup>2</sup> = 49 and <i>ab</i> = 6, what is the value of <i>a</i><sup>2</sup> + <i>b</i><sup>2</sup>?`,[`37`,`43`,`49`,`55`,`31`],0,`(a + b)² = a² + 2ab + b², donc a² + b² = 49 − 12 = 37. Inutile de trouver a et b.`),
+M('g6','algebra',2,`If 4<sup><i>x</i></sup> = 8<sup><i>x</i> − 1</sup>, what is the value of <i>x</i>?`,[`1`,`2`,`3`,`4`,`6`],2,`Même base : 2^(2x) = 2^(3x − 3), donc 2x = 3x − 3 et x = 3.`),
+M('g7','algebra',2,`If <i>f</i>(<i>x</i>) = <i>x</i><sup>2</sup> − 3<i>x</i>, what is the value of <i>f</i>(<i>f</i>(2))?`,[`−2`,`2`,`4`,`10`,`−10`],3,`f(2) = 4 − 6 = −2, puis f(−2) = 4 + 6 = 10.`),
+M('g8','algebra',3,`If <i>x</i> &lt; 0, <i>x</i><sup>2</sup> = 16, and <i>y</i><sup>3</sup> = −27, what is the value of <i>x</i> − <i>y</i>?`,[`−7`,`−1`,`1`,`7`,`−12`],1,`x < 0 donc x = −4 ; y = −3 (racine cubique unique). x − y = −4 + 3 = −1.`),
+M('g9','algebra',2,`For what value of <i>k</i> does the system 2<i>x</i> + 3<i>y</i> = 12 and 4<i>x</i> + 6<i>y</i> = <i>k</i> have infinitely many solutions?`,[`6`,`12`,`18`,`24`,`36`],3,`La 2e équation doit être exactement le double de la 1re : k = 24.`),
+M('g10','algebra',2,`If 1/<i>x</i> + 1/<i>y</i> = 1/2 and <i>xy</i> = 20, what is the value of <i>x</i> + <i>y</i>?`,[`2`,`5`,`10`,`20`,`40`],2,`1/x + 1/y = (x + y)/xy, donc (x + y)/20 = 1/2 et x + y = 10.`),
+M('g11','algebra',3,`How many integers <i>x</i> satisfy <i>x</i><sup>2</sup> &lt; 2<i>x</i> + 8?`,[`4`,`5`,`6`,`7`,`8`],1,`x² − 2x − 8 < 0 ⇔ (x − 4)(x + 2) < 0 ⇔ −2 < x < 4. Entiers : −1, 0, 1, 2, 3, soit 5.`),
+M('g12','algebra',1,`If <i>a</i>/<i>b</i> = 3/4 and <i>b</i>/<i>c</i> = 2/5, what is <i>a</i>/<i>c</i>?`,[`3/10`,`6/5`,`15/8`,`8/15`,`1/2`],0,`a/c = (a/b) × (b/c) = 3/4 × 2/5 = 6/20 = 3/10.`),
+M('g13','algebra',2,`If <i>x</i> = 2 + √3, what is the value of <i>x</i> + 1/<i>x</i>?`,[`4`,`2√3`,`4 + 2√3`,`2`,`3`],0,`1/(2 + √3) = (2 − √3)/(4 − 3) = 2 − √3. Donc x + 1/x = 4.`),
+M('g14','algebra',3,`If <i>x</i> and <i>y</i> are positive integers, <i>x</i> &gt; 1, and <i>x</i><sup><i>y</i></sup> = 64, how many ordered pairs (<i>x</i>, <i>y</i>) are possible?`,[`2`,`3`,`4`,`5`,`6`],2,`64 = 2⁶ = 4³ = 8² = 64¹, soit 4 couples.`),
+M('g15','algebra',2,`In an arithmetic sequence, the 1st term is 7 and the 10th term is 34. What is the 20th term?`,[`61`,`64`,`67`,`68`,`70`],1,`34 = 7 + 9d donc d = 3. 20e terme = 7 + 19 × 3 = 64.`),
+M('g16','algebra',2,`If 3<sup><i>a</i></sup> × 9<sup><i>b</i></sup> = 3<sup>10</sup> and <i>a</i> − <i>b</i> = 1, what is <i>a</i> + <i>b</i>?`,[`5`,`6`,`7`,`8`,`9`],2,`3^(a + 2b) = 3¹⁰ donc a + 2b = 10. Avec a = b + 1 : 3b + 1 = 10, b = 3, a = 4, donc a + b = 7.`),
+M('g17','algebra',3,`If <i>g</i>(<i>x</i>) = 2<i>x</i> + 1 and <i>h</i>(<i>x</i>) = <i>x</i><sup>2</sup>, for which values of <i>x</i> does <i>h</i>(<i>g</i>(<i>x</i>)) = <i>g</i>(<i>h</i>(<i>x</i>))?`,[`0 only`,`−2 only`,`0 and −2`,`0 and 2`,`No value`],2,`(2x + 1)² = 2x² + 1 ⇔ 4x² + 4x + 1 = 2x² + 1 ⇔ 2x(x + 2) = 0, donc x = 0 ou x = −2.`),
+M('g18','algebra',1,`If 4(<i>x</i> − 3) = 2<i>x</i> + 6, what is the value of <i>x</i>?`,[`3`,`6`,`9`,`12`,`18`],2,`4x − 12 = 2x + 6, donc 2x = 18 et x = 9.`),
+
+// ---------- Word problems, statistiques, combinatoire, probabilités ----------
+M('w1','wp',1,`A car travels at 60 miles per hour for 2 hours and then at 90 miles per hour for 1 hour. What is its average speed for the whole trip, in miles per hour?`,[`70`,`72`,`75`,`65`,`80`],0,`Distance totale = 120 + 90 = 210 miles en 3 h, soit 70 mph. Piège : la moyenne des vitesses (75) ne tient pas compte des durées.`),
+M('w2','wp',2,`Alice can complete a job in 6 hours and Ben can complete the same job in 3 hours. Working together at these rates, how many hours will they need?`,[`1.5`,`2`,`2.5`,`3`,`4.5`],1,`Taux combinés : 1/6 + 1/3 = 1/2 de travail par heure, donc 2 heures.`),
+M('w3','wp',2,`How many liters of pure water must be added to 20 liters of a 30% acid solution to obtain a 20% acid solution?`,[`5`,`8`,`10`,`12`,`15`],2,`L'acide reste à 6 L. 6/(20 + w) = 0,2 donc 20 + w = 30 et w = 10.`),
+M('w4','wp',2,`$2,000 is invested at 5% annual interest, compounded annually. How much interest is earned after 2 years?`,[`$200`,`$205`,`$210`,`$220`,`$2,205`],1,`2 000 × 1,05² = 2 205, soit 205 $ d'intérêts. Attention : 2 205 est le montant total, pas l'intérêt.`),
+M('w5','wp',1,`The average of 5 numbers is 18. When one number is removed, the average of the remaining 4 numbers is 16. What number was removed?`,[`2`,`18`,`20`,`24`,`26`],4,`Somme initiale = 90, somme restante = 64, donc le nombre retiré vaut 26.`),
+M('w6','wp',2,`The median of the set {2, 8, 5, 11, <i>x</i>} is 8. Which of the following could be the value of <i>x</i>?`,[`3`,`5`,`6`,`7`,`10`],4,`Avec 2, 5, 8, 11 et x, la médiane (3e valeur) vaut 8 seulement si x ≥ 8. Seul 10 convient.`),
+M('w7','wp',2,`In how many ways can 5 people sit in a row of 5 chairs if two of them, Ana and Bo, must sit next to each other?`,[`24`,`48`,`60`,`96`,`120`],1,`On colle Ana et Bo en un bloc : 4 éléments à ranger, 4! = 24, multiplié par 2 ordres dans le bloc = 48.`),
+M('w8','wp',2,`How many different 3-person committees can be formed from a group of 7 people?`,[`21`,`35`,`42`,`70`,`210`],1,`L'ordre n'a pas d'importance : C(7,3) = 7×6×5 / 3! = 35.`),
+M('w9','wp',2,`Two fair six-sided dice are rolled. What is the probability that the sum is 7?`,[`1/12`,`1/9`,`1/6`,`7/36`,`1/4`],2,`6 combinaisons favorables (1-6, 2-5, 3-4, 4-3, 5-2, 6-1) sur 36, soit 1/6.`),
+M('w10','wp',3,`A bag contains 4 red marbles and 6 blue marbles. Two marbles are drawn at random without replacement. What is the probability that both are red?`,[`1/15`,`2/15`,`4/25`,`1/5`,`2/9`],1,`4/10 × 3/9 = 12/90 = 2/15. Sans remise, le dénominateur diminue au 2e tirage.`),
+M('w11','wp',2,`A fair coin is tossed 3 times. What is the probability of getting at least one head?`,[`1/8`,`3/8`,`1/2`,`3/4`,`7/8`],4,`P(au moins une face) = 1 − P(aucune) = 1 − (1/2)³ = 7/8.`),
+M('w12','wp',2,`Which of the following sets has the greatest standard deviation?`,[`{10, 10, 10, 10, 10}`,`{1, 2, 3, 4, 5}`,`{10, 20, 30, 40, 50}`,`{100, 101, 102, 103, 104}`,`{5, 10, 15, 20, 25}`],2,`L'écart-type mesure la dispersion autour de la moyenne. Les valeurs de {10, …, 50} sont espacées de 10, plus que tous les autres ensembles. Ajouter 100 à chaque valeur (option D) ne change pas l'écart-type.`),
+M('w13','wp',2,`A train 300 meters long passes a signal pole in 15 seconds. What is the speed of the train, in kilometers per hour?`,[`54`,`60`,`72`,`80`,`90`],2,`300/15 = 20 m/s. 20 × 3,6 = 72 km/h.`),
+M('w14','wp',2,`A store marks up an item 40% above cost and then sells it at a 25% discount off the marked price. The store's profit is what percent of the cost?`,[`5%`,`10%`,`15%`,`−5%`,`0%`],0,`1,4 × 0,75 = 1,05 : le prix de vente est 105 % du coût, soit 5 % de profit.`),
+M('w15','wp',3,`Pipe A can fill a tank in 4 hours and pipe B in 6 hours. A drain can empty the full tank in 12 hours. If all three are open, how many hours will it take to fill the empty tank?`,[`2`,`2.4`,`3`,`3.5`,`4`],2,`1/4 + 1/6 − 1/12 = 3/12 + 2/12 − 1/12 = 4/12 = 1/3 de réservoir par heure, donc 3 heures.`),
+M('w16','wp',2,`Class A has 20 students with an average score of 70. Class B has 30 students with an average score of 80. What is the average score of all 50 students?`,[`74`,`75`,`76`,`77`,`78`],2,`(20×70 + 30×80)/50 = (1 400 + 2 400)/50 = 76. La moyenne se rapproche de la classe la plus nombreuse.`),
+M('w17','wp',3,`How many different arrangements can be made using all the letters of the word LEVEL?`,[`20`,`24`,`30`,`60`,`120`],2,`5! / (2! × 2!) = 120/4 = 30, car L et E apparaissent deux fois chacun.`),
+M('w18','wp',2,`A father is 3 times as old as his son. In 12 years, he will be twice as old as his son. How old is the son now?`,[`8`,`10`,`12`,`15`,`18`],2,`3s + 12 = 2(s + 12) donc s = 12.`),
+M('w19','wp',1,`12 workers can build a wall in 10 days. Working at the same rate, how many days would 15 workers need?`,[`6`,`7.5`,`8`,`9`,`12`],2,`Travail total = 12 × 10 = 120 jours-ouvrier. 120/15 = 8 jours.`),
+M('w20','wp',2,`The average of 7 consecutive integers is 20. What is the largest of these integers?`,[`21`,`22`,`23`,`24`,`26`],2,`Pour des entiers consécutifs, la moyenne est le terme du milieu (4e). Les termes vont de 17 à 23.`),
+];
+
+// ===== Banque de questions : VERBAL REASONING =====
+const QB_CR = [
+M('c1','cr',1,`Last year, the city of Harlow installed speed cameras on Main Street. Over the following twelve months, accidents on Main Street fell by 30 percent. The city council concluded that the cameras caused the decline.<br><br>Which of the following, if true, most seriously weakens the council's conclusion?`,[`Accidents also fell by about 30 percent last year on nearby streets that have no speed cameras.`,`Speed cameras are expensive to install and maintain.`,`Most drivers on Main Street are local residents.`,`The cameras were installed in March rather than January.`,`Some drivers say they dislike the cameras.`],0,`Si les accidents ont baissé autant là où il n'y a pas de caméras, une autre cause (météo, travaux, trafic…) explique sans doute la baisse : le lien causal est affaibli.`),
+M('c2','cr',2,`A company found that employees who attended its optional time-management workshop completed 20 percent more projects on schedule than employees who did not attend. The company plans to make the workshop mandatory for all employees in order to improve on-time completion.<br><br>The plan assumes which of the following?`,[`The workshop is the least expensive training the company offers.`,`Employees who attended were not already more organized than those who did not attend.`,`All employees will enjoy the workshop.`,`Projects completed on schedule are of higher quality.`,`The company has no other training programs.`],1,`Négation : si les participants étaient déjà plus organisés (auto-sélection), l'atelier n'explique pas l'écart et le rendre obligatoire n'aurait pas l'effet attendu. C'est l'hypothèse nécessaire.`),
+M('c3','cr',2,`Sales of electric bicycles in Rivertown doubled after the city built 40 kilometers of protected bike lanes. City planners argue that building more protected lanes will further increase e-bike sales.<br><br>Which of the following, if true, most strengthens the planners' argument?`,[`E-bikes are more expensive than ordinary bicycles.`,`Rivertown's population grew slightly over the same period.`,`In surveys, most new e-bike buyers in Rivertown said that the protected lanes were the main reason for their purchase.`,`Some residents oppose building more bike lanes.`,`Neighboring towns have fewer bike lanes than Rivertown.`],2,`Le témoignage direct des acheteurs confirme le lien de causalité entre les pistes protégées et les achats, ce qui renforce la prédiction.`),
+M('c4','cr',2,`Over the past decade, the number of people visiting Lake Orin's public beaches has risen steadily, yet the revenue the town collects from beach parking fees has fallen.<br><br>Which of the following, if true, best explains this apparent discrepancy?`,[`The beaches have become more crowded on weekends.`,`The town raised the parking fee five years ago.`,`A new free shuttle bus now brings most visitors to the beaches from the town center.`,`The lake's water quality has improved.`,`Some visitors stay at the beach for several hours.`],2,`Paradoxe : plus de visiteurs mais moins de recettes de parking. Si la plupart viennent en navette gratuite, ils ne paient pas de stationnement : les deux faits deviennent compatibles.`),
+M('c5','cr',1,`All of the restaurants on Elm Street that received a five-star rating this year use only locally sourced vegetables. Café Rosa, on Elm Street, uses only locally sourced vegetables.<br><br>Which of the following conclusions is most strongly supported by the statements above?`,[`Café Rosa received a five-star rating this year.`,`Using local vegetables guarantees a five-star rating.`,`No restaurant outside Elm Street received five stars.`,`If an Elm Street restaurant does not use only local vegetables, it did not receive a five-star rating this year.`,`Most restaurants on Elm Street use local vegetables.`],3,`« Cinq étoiles → légumes locaux » implique sa contraposée : « pas uniquement local → pas cinq étoiles ». L'option A inverse la condition (erreur logique classique).`),
+M('c6','cr',3,`Software firm Kortex claims that its new spam filter blocks 99 percent of spam emails. Critics point out that the filter also blocks 10 percent of legitimate emails.<br><br>Which of the following would be most useful to know in evaluating whether the filter is beneficial for a typical user?`,[`How many employees Kortex has`,`Whether competing filters cost more`,`The proportion of a typical user's incoming email that is spam`,`How long Kortex took to develop the filter`,`Whether the filter works on mobile phones`],2,`Question Evaluate : l'intérêt du filtre dépend de la part de spam reçue. Si le spam est rare, bloquer 10 % des vrais e-mails coûte plus que ce que le filtre rapporte ; s'il est massif, le filtre est très utile.`),
+M('c7','cr',2,`Politician: "Our state's unemployment rate fell from 8 percent to 5 percent during my term. Clearly, my job-training program put thousands of people back to work."<br><br>Which of the following, if true, most weakens the politician's argument?`,[`The job-training program cost less than expected.`,`During the same period, a large number of unemployed residents stopped looking for work and so were no longer counted as unemployed.`,`Some participants in the program found jobs in other states.`,`The politician's opponent proposed a different program.`,`Unemployment rates vary from state to state.`],1,`Le taux a pu baisser parce que des chômeurs ont quitté la population active, pas parce qu'ils ont retrouvé un emploi : autre explication de la baisse.`),
+M('c8','cr',3,`<b>Most nutritionists agree that eating breakfast improves concentration.</b> However, a recent study found that students who skipped breakfast scored no worse on morning tests than those who ate breakfast. <b>The study's participants, though, were all accustomed to skipping breakfast.</b><br><br>In the argument above, the two portions in boldface play which of the following roles?`,[`The first is a position the argument opposes; the second supports that position.`,`The first is a widely held view that the study appears to challenge; the second suggests a limitation of the study.`,`The first is the argument's conclusion; the second is evidence for it.`,`Both are evidence supporting the study's findings.`,`The first is evidence; the second is the argument's main conclusion.`],1,`Le 1er passage est l'opinion répandue que l'étude semble contredire ; le 2e relativise l'étude (échantillon habitué à sauter le petit-déjeuner).`),
+M('c9','cr',2,`To reduce traffic congestion downtown, the city of Norbury plans to raise downtown parking fees by 50 percent.<br><br>Which of the following, if true, most strongly suggests that the plan will fail to achieve its goal?`,[`Most downtown parking spaces are in private garages whose fees the city does not control.`,`Downtown businesses support the plan.`,`Parking fees in Norbury are lower than in nearby cities.`,`Many commuters own more than one car.`,`The city will use the extra revenue to repair roads.`],0,`Si la ville ne contrôle pas les tarifs de la plupart des places, la hausse ne touchera qu'une minorité de conducteurs : peu d'effet sur la congestion.`),
+M('c10','cr',1,`Bakery owner: "Since we started offering free samples at the entrance, our weekly sales have increased by 15 percent. So the samples must be attracting customers who would not otherwise have bought anything."<br><br>The argument depends on which of the following assumptions?`,[`The free samples are expensive to produce.`,`Competitors do not offer free samples.`,`The increase in sales was not caused by some other change at the bakery made at the same time.`,`Customers prefer bread to pastries.`,`The samples are offered every day.`],2,`L'argument attribue la hausse aux échantillons : il suppose qu'aucun autre changement simultané (nouveau produit, promotion…) ne l'explique.`),
+M('c11','cr',3,`In a survey of 2,000 subscribers to <i>Investor Weekly</i>, 70 percent said they expect stock prices to rise next year. The magazine concludes that most adults in the country are optimistic about the stock market.<br><br>Which of the following identifies the most serious flaw in the reasoning?`,[`It relies on a sample that is too small.`,`It assumes subscribers to an investment magazine are representative of all adults.`,`It confuses expectations with actual outcomes.`,`It ignores the 30 percent who were not optimistic.`,`It fails to define "stock prices."`],1,`Échantillon non représentatif : les abonnés d'un magazine d'investissement ne reflètent pas l'ensemble de la population adulte. 2 000 personnes suffisent souvent, à condition que l'échantillon soit représentatif.`),
+M('c12','cr',2,`Since the national park doubled its entrance fee, the number of annual visitors has fallen by 10 percent. Nonetheless, park officials report that total entrance-fee revenue has increased.<br><br>Which of the following can most properly be inferred from the information above?`,[`The park should raise its fee again.`,`Visitors who stopped coming were mostly local residents.`,`The average entrance-fee revenue collected per visitor is higher than it was before the increase.`,`The park's operating costs have increased.`,`Most visitors consider the new fee reasonable.`],2,`Le tarif ayant doublé pour chaque visiteur, la recette moyenne par visiteur est forcément plus élevée. Les autres options (relever encore le tarif, profil des visiteurs perdus, coûts, opinion) ne découlent pas des faits donnés.`),
+M('c13','cr',2,`Hospitals that adopted electronic patient records reported fewer medication errors than hospitals that kept paper records. A health agency therefore recommends that all hospitals adopt electronic records to reduce medication errors.<br><br>Which of the following, if true, most strengthens the recommendation?`,[`Electronic record systems are expensive.`,`Some doctors prefer paper records.`,`Within individual hospitals, medication errors decreased significantly after electronic records were introduced.`,`Paper records are easier to store for long periods.`,`Larger hospitals are more likely to adopt new technology.`],2,`La comparaison avant/après dans un même hôpital élimine l'idée que les hôpitaux « électroniques » étaient différents dès le départ : le lien causal est renforcé.`),
+M('c14','cr',3,`Researcher: "Cities with more public libraries per resident have higher literacy rates. Therefore, building more libraries will raise literacy rates."<br><br>Which of the following, if true, most seriously weakens the researcher's argument?`,[`Libraries also offer internet access.`,`Cities with higher literacy rates tend to vote to fund more libraries.`,`Some residents never use libraries.`,`Literacy rates have risen nationally over the past decade.`,`Library construction costs vary by city.`],1,`Causalité inversée : c'est peut-être l'alphabétisation élevée qui entraîne la création de bibliothèques, et non l'inverse.`),
+M('c15','cr',2,`Each year, Vanta Corp. produces exactly as many units of its X200 printer as it sells. This year, the company's total production cost for the X200 rose by 12 percent, while the number of X200 units sold stayed the same.<br><br>Which of the following must be true?`,[`The average production cost per X200 unit rose this year.`,`Vanta's profit on the X200 fell this year.`,`Vanta raised the price of the X200 this year.`,`Demand for printers is declining.`,`Vanta's other products also became more expensive to produce.`],0,`Même nombre d'unités et coût total en hausse de 12 % : le coût moyen par unité augmente forcément. Le profit, lui, dépend aussi du prix, qui n'est pas donné.`),
+M('c16','cr',1,`Mayor: "We should build a new stadium. It will create jobs during construction and attract tourists afterward, which will help local businesses."<br><br>Which of the following, if true, most weakens the mayor's argument?`,[`Several other cities have built stadiums.`,`Studies of similar cities found that money spent at new stadiums mostly came from local residents who reduced their spending at other local businesses.`,`The stadium will have a modern design.`,`Construction will take three years.`,`Some residents enjoy watching sports.`],1,`Si les dépenses au stade ne font que déplacer celles des habitants, il n'y a pas de gain net pour les commerces locaux : l'argument perd sa force.`),
+M('c17','cr',3,`Archaeologists found pottery fragments from the island of Kala at an ancient site on the mainland. They concluded that the mainland settlement traded with Kala.<br><br>Which of the following would be most useful to evaluate this conclusion?`,[`Whether the fragments are older than the mainland settlement itself`,`How many archaeologists worked at the site`,`Whether Kala pottery was decorated`,`What the mainland settlers ate`,`How far modern ships travel`],0,`Si les fragments sont antérieurs à l'établissement, ils ont pu arriver par d'autres voies (migrants plus anciens, par exemple) : la réponse fait varier la solidité de la conclusion sur le commerce.`),
+M('c18','cr',2,`Organic farms in Region Z use no synthetic pesticides, yet their average crop losses to insects are lower than those of conventional farms in the region.<br><br>Which of the following, if true, most helps to explain this finding?`,[`Organic produce sells at higher prices.`,`Organic farms in Region Z typically grow crops that are naturally resistant to the insects common in the region.`,`Conventional farms are larger on average.`,`Synthetic pesticides are expensive.`,`Some conventional farms are converting to organic methods.`],1,`Si les fermes bio cultivent des espèces naturellement résistantes, elles subissent moins de pertes même sans pesticides : le paradoxe est résolu.`),
+M('c19','cr',2,`An online retailer found that customers who used its product-comparison tool spent more per order than customers who did not. The retailer concludes that the tool encourages customers to spend more.<br><br>Which of the following, if true, casts the most doubt on this conclusion?`,[`The comparison tool is mainly used by customers shopping for expensive electronics.`,`The tool was recently redesigned.`,`Most customers use a mobile phone to shop.`,`The retailer sells more than 10,000 products.`,`Some customers never return to the site.`],0,`Les utilisateurs de l'outil achètent de toute façon des produits chers : c'est ce qu'ils achètent qui explique la dépense, pas l'outil.`),
+M('c20','cr',3,`Economist: "In Country Q, imported cars cost more than domestic cars of similar quality, yet imported cars' share of the market has grown each year for a decade."<br><br>Which of the following, if true, most helps to resolve the apparent paradox?`,[`Domestic car manufacturers have increased advertising.`,`Imported cars in Country Q are widely perceived as status symbols, and the number of high-income households has grown rapidly.`,`Fuel prices have been stable.`,`Country Q imposes a small tariff on imported cars.`,`Domestic cars are made with imported parts.`],1,`L'essor d'une clientèle aisée qui valorise le prestige explique pourquoi des voitures plus chères gagnent des parts de marché.`),
+M('c21','cr',2,`A city replaced its old streetlights with brighter LED lights. Afterward, reported nighttime burglaries in the city fell by 20 percent. Officials credited the new lights.<br><br>Each of the following, if true, weakens the officials' conclusion EXCEPT:`,[`During the same period, the city hired 100 additional night patrol officers.`,`Burglaries fell by a similar amount in neighboring cities that did not change their lights.`,`Residents became less likely to report burglaries during that period.`,`Burglaries declined most sharply in the neighborhoods that received the new lights first.`,`A major burglary ring was arrested shortly before the lights were installed.`],3,`Question EXCEPT : quatre options affaiblissent (autre cause, tendance générale, sous-déclaration, arrestation). L'option D renforce au contraire le lien entre éclairage et baisse.`),
+M('c22','cr',1,`Every member of the chess club also belongs to the math club. Some members of the math club belong to the drama club.<br><br>If the statements above are true, which of the following must also be true?`,[`Some chess club members belong to the drama club.`,`Every math club member belongs to the chess club.`,`No chess club member belongs to the drama club.`,`If someone does not belong to the math club, that person does not belong to the chess club.`,`Most drama club members belong to the math club.`],3,`« Échecs → maths » donne la contraposée « pas maths → pas échecs ». Rien ne permet de relier les clubs d'échecs et de théâtre.`),
+M('c23','cr',3,`Company spokesperson: "Our new factory complies with all national pollution regulations. Therefore, it poses no risk to the health of nearby residents."<br><br>The spokesperson's reasoning is most vulnerable to the criticism that it`,[`relies on the testimony of a biased source`,`assumes that complying with regulations guarantees the absence of any health risk`,`confuses cause and effect`,`draws a general conclusion from a single case`,`ignores the economic benefits of the factory`],1,`Respecter la réglementation ne signifie pas qu'il n'y a « aucun risque » : les normes fixent un seuil acceptable, pas une absence de risque.`),
+M('c24','cr',2,`A study found that people who drink green tea daily have a lower incidence of heart disease. A beverage company argues that drinking green tea reduces the risk of heart disease.<br><br>Which of the following, if true, most strengthens the company's argument?`,[`Green tea contains caffeine.`,`Daily green tea drinkers in the study did not differ from non-drinkers in diet, exercise, or smoking habits.`,`Green tea is popular in many countries.`,`The company sells several kinds of tea.`,`Some people dislike the taste of green tea.`],1,`Si les deux groupes sont comparables sur les autres facteurs de risque, ces facteurs ne peuvent pas expliquer la différence : le lien causal est renforcé.`),
+M('c25','cr',2,`Although Brava Airlines cut its ticket prices by 15 percent last year, its total revenue from ticket sales increased.<br><br>Which of the following, if true, best explains how this could have happened?`,[`Brava's fuel costs rose last year.`,`The number of tickets Brava sold increased by more than 20 percent.`,`Brava's competitors also cut prices.`,`Brava added a new route.`,`Brava's planes were frequently delayed.`],1,`Recette = prix × volume. Prix × 0,85 et volume × 1,2 ou plus donnent ≥ 1,02 : la recette augmente.`),
+M('c26','cr',3,`Columnist: "Students who take music lessons perform better in mathematics. So schools that cut music programs to save money will see math scores decline."<br><br>Which of the following is an assumption on which the columnist's argument depends?`,[`Music lessons are more expensive than math tutoring.`,`The better math performance of students who take music lessons is at least partly caused by the lessons.`,`All students enjoy music lessons.`,`Math scores are the most important measure of success.`,`Schools cannot find other ways to save money.`],1,`Pour prédire une baisse des notes, il faut que les cours de musique causent (au moins en partie) la meilleure réussite. Si c'est une simple corrélation, couper la musique ne changerait rien.`),
+M('c27','cr',2,`In Westport, the number of houses sold rose 25 percent this year, while the average sale price fell 10 percent.<br><br>Which of the following can be properly concluded from the information above?`,[`Total spending on houses sold in Westport rose this year.`,`House prices in Westport will continue to fall.`,`Buyers in Westport preferred smaller houses this year.`,`Mortgage rates fell this year.`,`More houses were built in Westport this year.`],0,`Total = nombre × prix moyen = 1,25 × 0,9 = 1,125 : le montant total dépensé a augmenté de 12,5 %. Les autres options vont au-delà des données.`),
+M('c28','cr',3,`A pharmaceutical company found that patients taking its new drug recovered from a certain infection in an average of 5 days, compared with 7 days for patients who received no treatment. The company claims the drug speeds recovery.<br><br>Which of the following would it be most useful to know in order to evaluate the company's claim?`,[`Whether the drug is more expensive than existing treatments`,`Whether patients who took the drug had less severe infections, on average, than those who received no treatment`,`How many years the drug was in development`,`Whether the drug is sold in tablet form`,`Whether the company makes other drugs`],1,`Si les patients traités avaient des infections plus légères, ils auraient guéri plus vite de toute façon. La réponse change l'évaluation de l'effet du médicament.`),
+M('c29','cr',1,`Clara: "We should switch to a four-day work week because employees who work fewer days are more productive."<br>Dev: "But our customers expect us to be available five days a week."<br><br>Dev responds to Clara's argument by`,[`questioning the evidence that shorter weeks increase productivity`,`raising a consideration that Clara's argument does not address`,`agreeing with Clara's conclusion for a different reason`,`showing that Clara's argument contradicts itself`,`questioning Clara's motives`],1,`Dev ne conteste pas la productivité : il soulève un autre facteur (la disponibilité pour les clients) que Clara n'a pas pris en compte.`),
+M('c30','cr',2,`A town council found that most complaints about noise came from residents living near the Harbor district's nightclubs. It plans to require the clubs to close at midnight instead of 2 a.m. to reduce noise complaints.<br><br>Which of the following, if true, most strongly supports the council's plan?`,[`The nightclubs employ many local residents.`,`Most of the noise complaints concern disturbances that occur between midnight and 2 a.m.`,`Some residents of the Harbor district do not mind the noise.`,`Nightclubs in other towns close at 3 a.m.`,`The clubs' owners oppose the plan.`],1,`Si la majorité des nuisances se produisent entre minuit et 2 h, fermer à minuit cible précisément la cause des plaintes.`),
+];
+
+// ---------- Reading Comprehension ----------
+const PASSAGES = {
+p1: { title:`Default options and saving`, text:`<p>For decades, economists assumed that workers chose how much to save for retirement by weighing their future needs against present consumption. If many workers saved too little, the standard explanation was that they simply preferred to spend now. Beginning in the late 1990s, however, studies of employer-sponsored savings plans challenged this view.</p><p>In several firms, enrollment in the retirement plan had been voluntary: new employees had to fill out a form to join. When these firms switched to automatic enrollment, in which employees were enrolled unless they filled out a form to leave, participation among new hires rose from under 50 percent to more than 85 percent. Since the plan's financial terms were unchanged, the shift could hardly be explained by a change in workers' underlying preferences.</p><p>Behavioral economists attribute the effect partly to inertia and partly to the implicit endorsement that a default seems to carry. Yet the same studies revealed a cost: most automatically enrolled workers kept the low default contribution rate, even those who, under the old system, would have chosen to save more. A well-meant default can therefore anchor savers at a level below what they would otherwise have selected.</p>`},
+p2: { title:`Coral bleaching`, text:`<p>Reef-building corals depend on microscopic algae that live inside their tissues. The algae supply most of the coral's energy through photosynthesis, and in return they receive shelter and nutrients. When water temperatures rise even 1 to 2 degrees Celsius above the usual summer maximum, this partnership breaks down: the algae produce harmful compounds, and the coral expels them. Without its algae, the coral turns white, a process known as bleaching, and may starve if conditions do not improve.</p><p>Not all corals bleach equally, however. Researchers have found that some colonies host strains of algae that tolerate heat better than others. Corals in naturally warm lagoons, for example, often carry these hardier strains and survive temperatures that kill corals elsewhere. This finding has raised hopes that reefs might adapt as oceans warm.</p><p>Such hopes should be tempered. Heat-tolerant algae typically provide the coral with less energy, so corals that host them tend to grow more slowly. Moreover, ocean temperatures are rising faster than most coral populations have ever had to adjust to. Adaptation may help some reefs, but it is unlikely to protect them all.</p>`},
+p3: { title:`The shipping container`, text:`<p>Before the 1960s, loading a cargo ship was slow, labor-intensive work. Goods arrived at the docks in sacks, barrels, and crates of every size, and teams of dockworkers moved them one by one into the ship's hold. A vessel might spend as much time in port as at sea, and theft and breakage were common.</p><p>The standardized steel container changed this. Because containers came in uniform sizes, cranes could lift them directly from trucks or trains onto ships, and port time fell from days to hours. The cost of loading cargo dropped dramatically, and shippers could send goods across oceans with far greater predictability.</p><p>Historians caution, though, that the container's influence did not come from the box alone. Its benefits depended on agreements among shipping lines, ports, and governments to adopt common dimensions, as well as on enormous investments in new cranes and port facilities. Ports that could not afford these investments, or that resisted them, often lost traffic to rivals. The container thus reshaped not only how goods moved but also which cities prospered from moving them.</p>`},
+p4: { title:`Remote work and innovation`, text:`<p>The rapid shift to remote work has prompted debate about its effect on innovation. Supporters point out that remote employees often report higher productivity on individual tasks, since they face fewer interruptions. Skeptics respond that innovation depends less on individual focus than on the exchange of ideas among people who would not otherwise interact.</p><p>A study of communication patterns at a large technology firm offers some support for the skeptics. After the firm moved to fully remote work, employees continued to communicate frequently with close colleagues, but their contact with people in other groups, so-called weak ties, declined sharply. Because weak ties are a primary channel through which new information enters a team, the researchers warned that remote work could slow the spread of ideas across an organization.</p><p>The study's authors acknowledge its limits. It examined only one firm, during a period when remote work was imposed suddenly rather than planned. Organizations that deliberately create opportunities for cross-group contact, such as periodic in-person gatherings, may be able to preserve the benefits of weak ties while keeping the advantages of remote work.</p>`},
+};
+function R(id, p, d, q, o, a, e) { return { id, t: 'rc', p, d, k: 'mcq', q, o, a, e }; }
+const QB_RC = [
+R('r1','p1',2,`The primary purpose of the passage is to`,[`argue that workers should be required to save more for retirement`,`describe evidence that challenged an assumption about saving behavior and note a drawback of the resulting approach`,`compare the retirement plans of several firms`,`explain why economists dislike automatic enrollment`,`criticize behavioral economics`],1,`Le texte présente une hypothèse classique, des données qui la remettent en cause, puis un inconvénient des options par défaut. B couvre l'ensemble.`),
+R('r2','p1',1,`According to the passage, after firms switched to automatic enrollment, participation among new hires`,[`fell slightly`,`remained under 50 percent`,`rose to more than 85 percent`,`rose only among older workers`,`doubled for all employees`],2,`Détail explicite du 2e paragraphe : de moins de 50 % à plus de 85 %.`),
+R('r3','p1',3,`The author mentions that "the plan's financial terms were unchanged" in order to`,[`show that the firms saved money`,`rule out an explanation based on changed incentives or preferences`,`suggest that the plan was poorly designed`,`explain why contribution rates were low`,`criticize the firms' managers`],1,`Question de fonction : si les conditions financières n'ont pas changé, la hausse ne vient pas d'une incitation nouvelle, ce qui soutient l'explication comportementale.`),
+R('r4','p1',3,`It can be inferred from the passage that some automatically enrolled workers`,[`left the plan immediately`,`would have saved at a higher rate had they enrolled voluntarily`,`were unaware they had been enrolled`,`preferred to spend all of their income`,`received higher salaries`],1,`Le dernier paragraphe indique que certains auraient choisi d'épargner davantage sous l'ancien système : le défaut les a « ancrés » plus bas.`),
+R('r5','p2',1,`According to the passage, bleaching occurs when`,[`algae grow too quickly inside coral tissue`,`corals expel their algae after a rise in water temperature`,`corals move to warmer lagoons`,`algae stop receiving nutrients from the ocean`,`water temperatures fall below the usual minimum`],1,`Le 1er paragraphe décrit l'expulsion des algues après un réchauffement de 1 à 2 °C.`),
+R('r6','p2',2,`The passage suggests that corals in naturally warm lagoons`,[`grow faster than other corals`,`never experience bleaching`,`are more likely to host heat-tolerant algae`,`do not depend on algae for energy`,`are found only in a few oceans`],2,`Le texte dit qu'ils portent souvent des souches plus résistantes à la chaleur. « Never » serait trop absolu.`),
+R('r7','p2',2,`The author's attitude toward the idea that reefs might adapt to warming oceans is best described as`,[`enthusiastic support`,`cautious skepticism`,`complete rejection`,`indifference`,`confusion`],1,`« Such hopes should be tempered » et « unlikely to protect them all » : l'auteur nuance sans rejeter totalement.`),
+R('r8','p2',3,`Which of the following, if true, would most weaken the author's concern about heat-tolerant algae?`,[`Heat-tolerant algae are found in many oceans.`,`Corals hosting heat-tolerant algae have been found to grow as fast as other corals.`,`Ocean temperatures are rising more quickly than expected.`,`Bleaching is visible from the air.`,`Some corals host more than one strain of algae.`],1,`L'une des réserves de l'auteur est la croissance plus lente. Si elle n'est pas confirmée, cette inquiétude perd son fondement.`),
+R('r9','p3',1,`According to the passage, before containers were introduced, ships`,[`were mostly loaded by cranes`,`could spend as much time in port as at sea`,`rarely carried goods in barrels`,`were built in standardized sizes`,`suffered little theft`],1,`Détail du 1er paragraphe.`),
+R('r10','p3',2,`The main point of the final paragraph is that`,[`containers were invented by governments`,`the container's effects depended on broader agreements and investments`,`most ports refused to use containers`,`historians overestimate the importance of containers`,`cranes were more important than containers`],1,`Le dernier paragraphe insiste sur les accords de normalisation et les investissements portuaires nécessaires.`),
+R('r11','p3',3,`It can be inferred from the passage that a port that resisted investing in container facilities would most likely`,[`attract more traffic than its rivals`,`lose shipping business to ports that did invest`,`see its dockworkers' wages rise`,`become the standard for container sizes`,`reduce theft and breakage`],1,`Le texte dit que ces ports ont souvent perdu du trafic au profit de leurs rivaux.`),
+R('r12','p3',2,`The author mentions sacks, barrels, and crates "of every size" primarily to`,[`illustrate the variety that made pre-container loading inefficient`,`show that ships carried many products`,`argue that crates were better than barrels`,`describe the work of historians`,`explain the origins of the container`],0,`La diversité des formats illustre pourquoi le chargement était lent : contraste avec le format standard du conteneur.`),
+R('r13','p4',2,`The passage is primarily concerned with`,[`proving that remote work increases productivity`,`discussing evidence about how remote work may affect the flow of ideas and noting that evidence's limits`,`describing the history of a technology firm`,`arguing that all firms should return to offices`,`defining the term "weak ties"`],1,`Le texte présente le débat, une étude favorable aux sceptiques, puis ses limites.`),
+R('r14','p4',2,`According to the passage, after the firm moved to remote work, employees' communication with close colleagues`,[`stopped almost entirely`,`continued at a high frequency`,`declined sharply`,`became more formal`,`shifted to weak ties`],1,`Ce sont les contacts avec les autres groupes (weak ties) qui ont chuté, pas ceux avec les collègues proches.`),
+R('r15','p4',3,`The researchers' warning is based on which of the following?`,[`Employees reported lower productivity.`,`Weak ties are a main way new information enters a team.`,`The firm planned remote work carefully.`,`Close colleagues stopped working together.`,`In-person gatherings were eliminated.`],1,`Le raisonnement : les weak ties apportent l'information nouvelle ; elles diminuent ; donc la diffusion des idées risque de ralentir.`),
+R('r16','p4',3,`The author mentions "periodic in-person gatherings" most likely as an example of`,[`a reason remote work fails`,`a way organizations might offset a drawback identified in the study`,`a cause of the decline in weak ties`,`a practice the studied firm already used`,`evidence supporting the supporters of remote work`],1,`Ces rencontres illustrent comment préserver les weak ties tout en gardant le travail à distance.`),
+];
+
+// ===== Banque de questions : DATA INSIGHTS =====
+const DS_OPTIONS = [
+  `Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.`,
+  `Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.`,
+  `BOTH statements TOGETHER are sufficient, but NEITHER statement ALONE is sufficient.`,
+  `EACH statement ALONE is sufficient.`,
+  `Statements (1) and (2) TOGETHER are NOT sufficient.`
+];
+function DS(id, d, q, s1, s2, a, e) {
+  return { id, t: 'ds', d, k: 'mcq', ds: true,
+    q: `${q}<div class="ds-st"><p>(1) ${s1}</p><p>(2) ${s2}</p></div>`, o: DS_OPTIONS, a, e };
+}
+const QB_DS = [
+DS('d1',1,`What is the value of <i>x</i>?`,`2<i>x</i> + 3 = 11`,`<i>x</i><sup>2</sup> = 16`,0,`(1) donne x = 4 : suffisant. (2) donne x = 4 ou −4 : insuffisant. Réponse A.`),
+DS('d2',1,`If <i>n</i> is an integer, is <i>n</i> even?`,`<i>n</i><sup>2</sup> is even.`,`3<i>n</i> is even.`,3,`(1) Si n² est pair, n est pair. (2) Si 3n est pair, n est pair (3 est impair). Chaque énoncé suffit : D.`),
+DS('d3',1,`What is the value of <i>x</i> + <i>y</i>?`,`2<i>x</i> + 2<i>y</i> = 10`,`<i>x</i> − <i>y</i> = 2`,0,`(1) donne directement x + y = 5. (2) ne donne que la différence. Réponse A. Inutile de connaître x et y séparément.`),
+DS('d4',2,`Is <i>x</i> &gt; 0?`,`<i>x</i><sup>2</sup> &gt; 0`,`<i>x</i><sup>3</sup> &gt; 0`,1,`(1) vrai pour x = 2 comme pour x = −2 : insuffisant. (2) un cube positif implique x > 0 : suffisant. Réponse B.`),
+DS('d5',1,`What is the ratio of boys to girls in a class?`,`There are 12 boys in the class.`,`There are 30 students in the class.`,2,`Aucun énoncé seul ne suffit. Ensemble : 18 filles, ratio 12:18 = 2:3. Réponse C.`),
+DS('d6',2,`If <i>k</i> is a positive integer, is <i>k</i> divisible by 6?`,`<i>k</i> is divisible by 3.`,`<i>k</i> is divisible by 4.`,2,`Seuls : 3 (non) vs 6 (oui) pour (1) ; 4 (non) vs 12 (oui) pour (2). Ensemble : k divisible par 12, donc par 6. Réponse C.`),
+DS('d7',2,`What is the average (arithmetic mean) of <i>a</i>, <i>b</i>, and <i>c</i>?`,`<i>a</i> + <i>b</i> = 10`,`<i>a</i> + <i>b</i> + <i>c</i> = 15`,1,`(2) donne la somme, donc la moyenne = 5 : suffisant. (1) ne dit rien sur c. Réponse B.`),
+DS('d8',2,`If <i>x</i> and <i>y</i> are positive, is <i>x</i> &gt; <i>y</i>?`,`<i>x</i>/<i>y</i> &gt; 1`,`<i>x</i> − <i>y</i> &gt; −1`,0,`(1) y > 0, donc x > y : suffisant. (2) x = 3, y = 2 (oui) ou x = 2, y = 2,5 (non) : insuffisant. Réponse A.`),
+DS('d9',2,`If <i>n</i> is an integer, what is the value of <i>n</i>?`,`3 &lt; <i>n</i> &lt; 6`,`<i>n</i> &gt; 3`,4,`(1) n = 4 ou 5. (2) n'ajoute rien de plus. Ensemble, toujours 4 ou 5 : réponse E.`),
+DS('d10',2,`If <i>x</i> and <i>y</i> are nonzero, is <i>xy</i> &lt; 0?`,`<i>x</i>/<i>y</i> &lt; 0`,`<i>x</i> + <i>y</i> &gt; 0`,0,`(1) x/y < 0 signifie que x et y sont de signes opposés, donc xy < 0 : suffisant. (2) x = y = 1 (non) ou x = 3, y = −1 (oui). Réponse A.`),
+DS('d11',2,`What is the price of one shirt?`,`2 shirts and 1 tie cost $70.`,`1 shirt and 2 ties cost $65.`,2,`Deux inconnues, deux équations indépendantes : ensemble, 2s + t = 70 et s + 2t = 65 donnent s = 25. Seul, aucun ne suffit. Réponse C.`),
+DS('d12',2,`What is the value of <i>x</i>?`,`<i>x</i><sup>2</sup> − 5<i>x</i> + 6 = 0`,`<i>x</i> &gt; 2.5`,2,`(1) x = 2 ou 3. (2) infinité de valeurs. Ensemble : x = 3. Réponse C.`),
+DS('d13',2,`Is |<i>x</i>| = <i>x</i>?`,`<i>x</i> ≥ 0`,`<i>x</i><sup>2</sup> = <i>x</i>`,3,`|x| = x ⇔ x ≥ 0. (1) le dit directement. (2) donne x = 0 ou 1, deux valeurs positives ou nulles : la réponse est toujours « oui ». Réponse D.`),
+DS('d14',2,`How many employees does Company Z have?`,`40 percent of the employees are managers.`,`30 percent of the managers are women.`,4,`Uniquement des pourcentages, aucune valeur absolue : même ensemble, impossible de connaître l'effectif. Réponse E.`),
+DS('d15',3,`Did Firm X's revenue increase from 2024 to 2025? (Profit = Revenue − Cost)`,`Firm X's profit increased by 10 percent.`,`Firm X's costs decreased by 5 percent.`,4,`R = P + C. Ensemble : R₂₀₂₅ − R₂₀₂₄ = 0,1P − 0,05C, dont le signe dépend du rapport entre P et C. Exemple : P = 100, C = 100 → +5 ; P = 10, C = 100 → −4. Réponse E.`),
+DS('d16',1,`What is the value of <i>x</i>?`,`<i>x</i>/3 + <i>x</i>/6 = 5`,`3<i>x</i> = 30`,3,`(1) x/2 = 5 donc x = 10. (2) x = 10. Chaque énoncé suffit : D.`),
+DS('d17',3,`Is <i>a</i> &gt; <i>b</i>?`,`<i>a</i><sup>2</sup> &gt; <i>b</i><sup>2</sup>`,`<i>a</i> &gt; 0`,2,`(1) a = 3, b = 1 (oui) ; a = −3, b = 1 (non). (2) a = 1, b = 5 (non). Ensemble : a > 0 et |a| > |b|, donc a > |b| ≥ b. Réponse C.`),
+DS('d18',1,`If <i>n</i> is an integer, is <i>n</i> odd?`,`<i>n</i> + 1 is even.`,`2<i>n</i> is even.`,0,`(1) n + 1 pair ⇔ n impair : suffisant. (2) 2n est toujours pair : aucune information. Réponse A.`),
+DS('d19',1,`Set S consists of 5 integers. What is the average (arithmetic mean) of the integers in S?`,`The sum of the integers in S is 40.`,`The median of the integers in S is 8.`,0,`(1) moyenne = 40/5 = 8. (2) la médiane ne détermine pas la moyenne. Réponse A.`),
+DS('d20',3,`If <i>n</i> is a positive integer, what is the remainder when <i>n</i> is divided by 6?`,`When <i>n</i> is divided by 3, the remainder is 1.`,`<i>n</i> is even.`,2,`(1) n = 1, 4, 7, 10… (restes 1 ou 4 modulo 6). (2) pair : restes 0, 2 ou 4. Ensemble : n = 4, 10, 16… reste toujours 4. Réponse C.`),
+DS('d21',1,`How long did it take John to drive from city A to city B?`,`His average speed was 60 kilometers per hour.`,`He left city A at 9:00 a.m.`,4,`Il manque la distance (ou l'heure d'arrivée). Même ensemble, insuffisant : E.`),
+DS('d22',2,`Is <i>x</i> an integer?`,`2<i>x</i> is an integer.`,`<i>x</i>/2 is an integer.`,1,`(1) x = 0,5 (non) ou x = 1 (oui). (2) x/2 = m entier, donc x = 2m est entier. Réponse B.`),
+];
+
+// ---------- Graphiques SVG (Graphics Interpretation) ----------
+function barChartSVG(title, labels, values, unit, max) {
+  const W = 520, H = 280, L = 52, B = 40, T = 34, R = 16;
+  const ch = H - B - T, cw = W - L - R, bw = cw / labels.length;
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}"><text x="${L}" y="20" class="ct">${title}</text>`;
+  for (let g = 0; g <= max; g += max / 4) {
+    const y = T + ch - (g / max) * ch;
+    s += `<line x1="${L}" x2="${W - R}" y1="${y}" y2="${y}" class="cg"/><text x="${L - 8}" y="${y + 4}" class="cl" text-anchor="end">${g}</text>`;
+  }
+  labels.forEach((lb, i) => {
+    const h = (values[i] / max) * ch, x = L + i * bw + bw * 0.2;
+    s += `<rect x="${x}" y="${T + ch - h}" width="${bw * 0.6}" height="${h}" class="cb"/><text x="${x + bw * 0.3}" y="${T + ch - h - 6}" class="cv" text-anchor="middle">${values[i]}</text><text x="${x + bw * 0.3}" y="${H - 18}" class="cl" text-anchor="middle">${lb}</text>`;
+  });
+  return s + `<text x="${L}" y="${H - 2}" class="cl">${unit}</text></svg>`;
+}
+function lineChartSVG(title, labels, values, unit, min, max) {
+  const W = 520, H = 280, L = 52, B = 40, T = 34, R = 24;
+  const ch = H - B - T, cw = W - L - R, step = cw / (labels.length - 1);
+  const yv = v => T + ch - ((v - min) / (max - min)) * ch;
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}"><text x="${L}" y="20" class="ct">${title}</text>`;
+  for (let g = min; g <= max; g += (max - min) / 4) {
+    s += `<line x1="${L}" x2="${W - R}" y1="${yv(g)}" y2="${yv(g)}" class="cg"/><text x="${L - 8}" y="${yv(g) + 4}" class="cl" text-anchor="end">${g}</text>`;
+  }
+  s += `<polyline class="cline" points="${values.map((v, i) => `${L + i * step},${yv(v)}`).join(' ')}"/>`;
+  labels.forEach((lb, i) => {
+    s += `<circle cx="${L + i * step}" cy="${yv(values[i])}" r="4" class="cdot"/><text x="${L + i * step}" y="${yv(values[i]) - 10}" class="cv" text-anchor="middle">${values[i]}</text><text x="${L + i * step}" y="${H - 18}" class="cl" text-anchor="middle">${lb}</text>`;
+  });
+  return s + `<text x="${L}" y="${H - 2}" class="cl">${unit}</text></svg>`;
+}
+const CHART_REV = barChartSVG('Monthly revenue, Company K (thousands of $)', ['Jan','Feb','Mar','Apr','May','Jun'], [120,135,110,150,165,140], 'Thousands of dollars', 200);
+const CHART_USERS = lineChartSVG('Active users of App V, 2020–2025 (thousands)', ['2020','2021','2022','2023','2024','2025'], [40,52,61,75,90,101], 'Thousands of users', 0, 120);
+
+const TABLE_SALES = `<table class="dtable"><caption>Unit sales and prices by region, Firm M</caption><thead><tr><th>Region</th><th>Units 2024</th><th>Units 2025</th><th>Avg. price 2025 ($)</th></tr></thead><tbody>
+<tr><td>North</td><td>1,200</td><td>1,500</td><td>40</td></tr><tr><td>South</td><td>900</td><td>810</td><td>55</td></tr><tr><td>East</td><td>1,500</td><td>1,650</td><td>35</td></tr><tr><td>West</td><td>600</td><td>780</td><td>50</td></tr><tr><td>Central</td><td>1,000</td><td>1,100</td><td>45</td></tr></tbody></table>`;
+const TABLE_STAFF = `<table class="dtable"><caption>Employees by department, Company P</caption><thead><tr><th>Department</th><th>Headcount</th><th>% working remotely</th><th>Avg. tenure (years)</th></tr></thead><tbody>
+<tr><td>Finance</td><td>40</td><td>25%</td><td>6.5</td></tr><tr><td>IT</td><td>80</td><td>60%</td><td>4.0</td></tr><tr><td>Sales</td><td>120</td><td>35%</td><td>3.2</td></tr><tr><td>HR</td><td>20</td><td>10%</td><td>8.1</td></tr><tr><td>Operations</td><td>140</td><td>15%</td><td>5.0</td></tr></tbody></table>`;
+
+const YN = ['Yes', 'No'];
+function TA(id, d, stim, items, e) {
+  return { id, t: 'di', d, k: 'multi', layout: 'yn', sub: 'Table Analysis', stim,
+    q: `For each of the following statements, select <b>Yes</b> if the statement is true based on the information in the table. Otherwise, select <b>No</b>.`,
+    items: items.map(([s, a]) => ({ s, o: YN, a })), e };
+}
+function GI(id, d, stim, items, e) {
+  return { id, t: 'di', d, k: 'multi', layout: 'select', sub: 'Graphics Interpretation', stim,
+    q: `Select from each drop-down menu the option that creates the most accurate statement based on the information provided.`, items, e };
+}
+function TP(id, d, q, cols, opts, ans, e) {
+  return { id, t: 'di', d, k: 'multi', layout: 'grid', sub: 'Two-Part Analysis', q, cols, opts,
+    items: cols.map((c, i) => ({ s: c, o: opts, a: ans[i] })), e };
+}
+const MSR_TABS = [
+  { title: 'Email 1', html: `<p><b>From:</b> Head of Sales<br><b>To:</b> Leadership team</p><p>Our goal for Q3 is to grow total subscription revenue by 15% over Q2. To get there, I propose two changes: a 10% price increase on the Pro plan, and the launch of a new Team plan priced at $45 per user per month.</p>` },
+  { title: 'Email 2', html: `<p><b>From:</b> Finance<br><b>To:</b> Head of Sales</p><p>For reference, in Q2 we had 8,000 Pro subscribers paying $50 per month and 25,000 Basic subscribers paying $12 per month. Basic pricing will not change in Q3. Based on past price changes, a 10% increase on Pro should cause about 5% of Pro subscribers to cancel at the start of the quarter.</p>` },
+  { title: 'Notes', html: `<p>All revenue figures are for full quarters (3 months). Assume that subscriber numbers stay constant during a quarter once any cancellations at the start of the quarter have occurred, and that no new Pro or Basic subscribers join in Q3.</p>` },
+];
+const QB_DI = [
+TA('t1',2,TABLE_SALES,[[`At least four of the five regions increased unit sales by 10% or more from 2024 to 2025.`,0],[`East had the highest 2025 revenue (units × average price) of the five regions.`,1],[`Total unit sales in 2025 were more than 10% higher than in 2024.`,0]],`(1) Oui : North +25 %, East +10 %, West +30 %, Central +10 % ; seul South baisse. (2) Non : North = 1 500 × 40 = 60 000 $ contre 57 750 $ pour East. (3) Oui : 5 840 contre 5 200, soit +12,3 %.`),
+TA('t2',2,TABLE_SALES,[[`South had the highest average price in 2025.`,0],[`The median of the five regions' 2025 unit sales is 1,100.`,0],[`West's 2025 revenue was less than 40% of North's 2025 revenue.`,1]],`(1) Oui : 55 $. (2) Oui : 780, 810, 1 100, 1 500, 1 650, la valeur centrale est 1 100. (3) Non : 39 000/60 000 = 65 %.`),
+TA('t3',3,TABLE_STAFF,[[`IT has more remote employees than Sales.`,0],[`More than 30% of all Company P employees work remotely.`,0],[`The department with the largest headcount has the lowest percentage of remote employees.`,1]],`(1) Oui : 48 contre 42. (2) Oui : 10 + 48 + 42 + 2 + 21 = 123 sur 400, soit 30,75 %. (3) Non : Operations a le plus grand effectif (15 %), mais HR a le pourcentage le plus bas (10 %).`),
+TA('t4',3,TABLE_STAFF,[[`Operations has fewer than half as many remote employees as IT.`,0],[`The average tenure of all Company P employees is greater than 5 years.`,1],[`Finance and HR together have fewer employees than IT.`,0]],`(1) Oui : 21 < 24 (moitié de 48). (2) Non : moyenne pondérée = (260 + 320 + 384 + 162 + 700)/400 = 4,57 ans. Piège : la moyenne simple des 5 départements (5,36) ne tient pas compte des effectifs. (3) Oui : 60 < 80.`),
+GI('i1',2,CHART_REV,[{s:`The greatest month-over-month percentage increase in revenue occurred from`,o:['Jan to Feb','Mar to Apr','Apr to May','May to Jun'],a:1},{s:`The average monthly revenue over the six months was closest to (thousands of $)`,o:['125','137','140','145'],a:1}],`(1) Jan→Fév +12,5 % ; Mars→Avr +36,4 % ; Avr→Mai +10 %. (2) 820/6 ≈ 136,7, donc 137.`),
+GI('i2',2,CHART_REV,[{s:`June revenue was approximately what percent of May revenue?`,o:['80%','85%','90%','118%'],a:1},{s:`The number of months in which revenue was above the six-month average is`,o:['2','3','4','5'],a:1}],`(1) 140/165 ≈ 84,8 %. (2) Moyenne ≈ 136,7 : seuls avril (150), mai (165) et juin (140) la dépassent ; février (135) reste juste en dessous.`),
+GI('i3',2,CHART_USERS,[{s:`From 2020 to 2025, the number of active users increased by approximately`,o:['100%','125%','152%','175%'],a:2},{s:`The smallest year-over-year increase in users occurred from 2021 to`,o:['2022','2023','2024','2025'],a:0}],`(1) 101/40 = 2,525, soit +152,5 %. (2) Hausses : +12, +9, +14, +15, +11 : la plus faible est 2021→2022.`),
+GI('i4',3,CHART_USERS,[{s:`If the 2024-to-2025 percentage growth rate continues, users in 2026 will be closest to (thousands)`,o:['105','109','113','120'],a:2},{s:`The average annual increase in users from 2020 to 2025 was (thousands)`,o:['10.2','12.2','15.2','20.2'],a:1}],`(1) Taux = 101/90 ≈ 1,122 ; 101 × 1,122 ≈ 113,3. (2) (101 − 40)/5 = 12,2 (5 intervalles entre 6 années).`),
+TP('p1',2,`A store sells notebooks for $<i>x</i> each and pens for $<i>y</i> each. Three notebooks and two pens cost $19, and two notebooks and five pens cost $20.<br><br>Select the price of one notebook in the first column and the price of one pen in the second column.`,['Notebook ($x)','Pen ($y)'],['1','2','3','4','5','6'],[4,1],`3x + 2y = 19 et 2x + 5y = 20. En multipliant : 6x + 4y = 38 et 6x + 15y = 60, donc 11y = 22, y = 2 et x = 5.`),
+TP('p2',2,`Brightline Telecom plans to replace 70% of its phone support staff with a chatbot, arguing that this will cut support costs without reducing customer satisfaction.<br><br>Select the statement that would most <b>strengthen</b> the argument in the first column and the statement that would most <b>weaken</b> it in the second column.`,['Strengthen','Weaken'],[`In a pilot, customers who used the chatbot rated their experience as highly as those who spoke with agents.`,`The chatbot's annual license fee exceeds the salaries of the staff it would replace.`,`Several competitors already use chatbots.`,`Most of Brightline's support calls concern billing questions.`,`Brightline's support staff work in two time zones.`],[0,1],`Renforce : le pilote montre une satisfaction maintenue. Affaiblit : si la licence coûte plus que les salaires économisés, l'objectif de réduction des coûts échoue. Les autres options sont neutres.`),
+TP('p3',2,`Machine A produces 120 units per hour and Machine B produces 80 units per hour. Working together at these rates, the machines produce an order of 1,000 units.<br><br>Select the number of hours needed in the first column and the number of units produced by Machine B in the second column.`,['Hours','Units by B'],['4','5','6','400','500','600'],[1,3],`Ensemble : 200 unités/h, donc 1 000/200 = 5 h. B produit 80 × 5 = 400 unités.`),
+TP('p4',2,`Select values of <i>x</i> and <i>y</i> that satisfy both 2<i>x</i> − <i>y</i> = 7 and <i>x</i> + 3<i>y</i> = 14. Select <i>x</i> in the first column and <i>y</i> in the second column.`,['x','y'],['1','2','3','4','5','7'],[4,2],`De la 1re : y = 2x − 7. Dans la 2e : x + 6x − 21 = 14, donc x = 5 et y = 3.`),
+TP('p5',3,`Researchers found that office workers who regularly take the stairs report higher energy levels than those who take the elevator. They concluded that taking the stairs increases energy.<br><br>Select an <b>assumption</b> on which the conclusion depends in the first column and the finding that would most <b>undermine</b> the conclusion in the second column.`,['Assumption','Undermines'],[`People with high energy levels are not more likely than others to choose the stairs.`,`Most offices in the study had both stairs and elevators.`,`Before the study began, stair users were, on average, younger and fitter than elevator users.`,`Elevators consume electricity.`,`Some people take the stairs only occasionally.`],[0,2],`Hypothèse : le lien n'est pas inversé (ce ne sont pas les personnes énergiques qui choisissent l'escalier). Ce qui affaiblit : les utilisateurs de l'escalier étaient déjà plus jeunes et en forme, une autre cause de l'écart.`),
+TP('p6',3,`A fund's value rose by 20% in Year 1 and then fell by 25% in Year 2.<br><br>Select the overall percent change over the two years in the first column and the percent increase needed in Year 3 to return exactly to the original value in the second column.`,['Change over 2 years','Increase needed in Year 3'],['−10%','−5%','5%','10%','11.1%','25%'],[0,4],`1,2 × 0,75 = 0,9, soit −10 %. Pour revenir à 1 : 1/0,9 ≈ 1,111, soit +11,1 % (et non +10 %, car la base est plus petite).`),
+{ id:'m1', t:'di', d:2, k:'mcq', sub:'Multi-Source Reasoning', grp:'msr1', tabs: MSR_TABS, q:`If the Pro price increase is implemented and cancellations occur as Finance expects, what will Pro subscription revenue be in Q3?`, o:['$1,140,000','$1,200,000','$1,254,000','$1,320,000','$1,386,000'], a:2, e:`Abonnés Pro restants : 8 000 × 0,95 = 7 600. Nouveau prix : 55 $. Revenu trimestriel : 7 600 × 55 × 3 = 1 254 000 $.` },
+{ id:'m2', t:'di', d:3, k:'mcq', sub:'Multi-Source Reasoning', grp:'msr1', tabs: MSR_TABS, q:`Q2 subscription revenue came only from Pro and Basic. If Q3 Pro revenue is $1,254,000, how much revenue must the Team plan generate in Q3 for the company to reach the 15% growth goal?`, o:['$165,000','$261,000','$300,000','$315,000','$345,000'], a:1, e:`Q2 = 8 000 × 50 × 3 + 25 000 × 12 × 3 = 1 200 000 + 900 000 = 2 100 000 $. Objectif = 2 415 000 $. Basic reste à 900 000 $. Team doit apporter 2 415 000 − 1 254 000 − 900 000 = 261 000 $.` },
+{ id:'m3', t:'di', d:2, k:'mcq', sub:'Multi-Source Reasoning', grp:'msr1', tabs: MSR_TABS, q:`If the Team plan must generate $261,000 in Q3 at the proposed price, what is the minimum number of Team users needed for the full quarter?`, o:['1,450','1,800','1,934','2,320','5,800'], a:2, e:`Un utilisateur Team rapporte 45 × 3 = 135 $ par trimestre. 261 000/135 = 1 933,3, donc au moins 1 934 utilisateurs (on arrondit au-dessus).` },
+];
+
+// ===== Thèmes, sections et étapes du parcours =====
+const THEMES = {
+  arith:   { name: 'Arithmétique et nombres', sec: 'Q' },
+  algebra: { name: 'Algèbre', sec: 'Q' },
+  wp:      { name: 'Word problems, stats et probabilités', sec: 'Q' },
+  cr:      { name: 'Critical Reasoning', sec: 'V' },
+  rc:      { name: 'Reading Comprehension', sec: 'V' },
+  ds:      { name: 'Data Sufficiency', sec: 'DI' },
+  di:      { name: 'Tableaux, graphiques, Two-Part, MSR', sec: 'DI' },
+};
+const SECTIONS = {
+  Q:  { name: 'Quantitative Reasoning', short: 'Quant', n: 21, themes: ['arith', 'algebra', 'wp'] },
+  V:  { name: 'Verbal Reasoning', short: 'Verbal', n: 23, themes: ['cr', 'rc'] },
+  DI: { name: 'Data Insights', short: 'Data Insights', n: 20, themes: ['ds', 'di'] },
+};
+const C = (f, b) => ({ f, b });
+const CARDS = {
+  arith: [
+    C(`Critères de divisibilité par 3, 4 et 9`, `<b>3</b> : la somme des chiffres est divisible par 3.<br><b>9</b> : la somme des chiffres est divisible par 9.<br><b>4</b> : les deux derniers chiffres forment un multiple de 4.`),
+    C(`Nombre de diviseurs de n = p<sup>a</sup> × q<sup>b</sup>`, `(a + 1)(b + 1).<br>Exemple : 72 = 2³ × 3², donc 4 × 3 = 12 diviseurs.`),
+    C(`Hausses et baisses successives en %`, `On multiplie les coefficients.<br>+20 % puis −20 % : 1,2 × 0,8 = 0,96, soit −4 %.`),
+    C(`Chiffre des unités d'une puissance`, `Les unités sont cycliques (période 4 au maximum).<br>Puissances de 3 : 3, 9, 7, 1. On prend l'exposant modulo 4.`),
+    C(`Pair et impair`, `pair × entier = pair<br>impair + impair = pair<br>impair × impair = impair<br>pair + impair = impair`),
+    C(`Nombres premiers à connaître par cœur`, `2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47.<br>1 n'est pas premier. 2 est le seul premier pair.`),
+    C(`Nombre de zéros à la fin de n!`, `On compte les facteurs 5 : ⌊n/5⌋ + ⌊n/25⌋ + …<br>50! : 10 + 2 = 12 zéros.`),
+    C(`PGCD et PPCM`, `PGCD : plus petits exposants communs.<br>PPCM : plus grands exposants.<br>Pour deux entiers : PGCD × PPCM = a × b.`),
+  ],
+  algebra: [
+    C(`Les trois identités remarquables`, `(a + b)² = a² + 2ab + b²<br>(a − b)² = a² − 2ab + b²<br>a² − b² = (a + b)(a − b)`),
+    C(`Règles des exposants`, `a<sup>m</sup> × a<sup>n</sup> = a<sup>m+n</sup> ; (a<sup>m</sup>)<sup>n</sup> = a<sup>mn</sup><br>a<sup>0</sup> = 1 ; a<sup>−n</sup> = 1/a<sup>n</sup><br>Réflexe : tout ramener à la même base.`),
+    C(`Résoudre |x − a| &lt; b`, `a − b &lt; x &lt; a + b.<br>Lecture : la distance entre x et a est inférieure à b.`),
+    C(`Équation du second degré`, `Factoriser en premier.<br>Pour ax² + bx + c = 0 : somme des racines = −b/a, produit = c/a.`),
+    C(`Inéquations : le piège du signe`, `Multiplier ou diviser par un négatif inverse le sens.<br>Ne jamais diviser par une variable dont le signe est inconnu.`),
+    C(`Systèmes de deux équations`, `La combinaison linéaire est souvent plus rapide que la substitution.<br>Équations proportionnelles : infinité de solutions (ou aucune).`),
+    C(`Fonctions composées f(g(x))`, `On calcule de l'intérieur vers l'extérieur : d'abord g(x), puis f appliquée au résultat.`),
+    C(`Suites arithmétiques`, `u<sub>n</sub> = u<sub>1</sub> + (n − 1)d<br>Somme = nombre de termes × (premier + dernier) / 2`),
+  ],
+  wp: [
+    C(`Vitesse moyenne`, `Distance totale ÷ temps total.<br>Jamais la moyenne des vitesses, sauf si les durées sont égales.`),
+    C(`Travail combiné`, `On additionne les taux : 1/T = 1/a + 1/b.<br>Un vidage (drain) se soustrait.`),
+    C(`Mélanges et dilutions`, `La quantité de produit pur est conservée.<br>Écrire : produit pur / volume total = nouvelle concentration.`),
+    C(`Intérêts composés`, `Montant = P × (1 + r)<sup>n</sup>.<br>Intérêts = montant − P. Attention à la question posée.`),
+    C(`Moyennes`, `Somme = moyenne × nombre d'éléments.<br>Moyenne pondérée : elle penche vers le groupe le plus nombreux.`),
+    C(`Médiane et écart-type`, `Médiane : valeur du milieu une fois triées.<br>Écart-type : dispersion autour de la moyenne. Ajouter une constante ne le change pas ; multiplier par k le multiplie par |k|.`),
+    C(`Permutations et combinaisons`, `Ordre compte : n!, ou n!/(n − k)!<br>Ordre ne compte pas : C(n, k) = n! / (k!(n − k)!)<br>Éléments identiques : diviser par k! pour chaque groupe.`),
+    C(`Probabilités`, `P(au moins un) = 1 − P(aucun).<br>Événements successifs : on multiplie.<br>Sans remise : le dénominateur diminue.`),
+  ],
+  cr: [
+    C(`Anatomie d'un argument`, `Prémisses (les faits) → conclusion (ce que l'auteur veut prouver).<br>L'hypothèse (assumption) est le lien non écrit entre les deux.`),
+    C(`Assumption : la technique de la négation`, `Niez la réponse proposée. Si l'argument s'effondre, c'est l'hypothèse nécessaire.`),
+    C(`Weaken`, `Attaquer le lien prémisses → conclusion :<br>autre cause possible, causalité inversée, échantillon non représentatif, comparaison biaisée.`),
+    C(`Strengthen`, `Éliminer une autre explication ou confirmer le lien causal (avant/après, groupes comparables).`),
+    C(`Inference`, `La réponse doit être vraie à partir du texte seul.<br>Se méfier des mots extrêmes : always, never, all, most.`),
+    C(`Paradox (resolve the discrepancy)`, `Chercher le fait qui permet aux deux constats, apparemment contradictoires, d'être vrais en même temps.`),
+    C(`Evaluate`, `La bonne question est celle dont les deux réponses possibles (oui ou non) font varier la solidité de l'argument.`),
+    C(`Pièges classiques`, `Hors sujet ; trop fort ; effet inverse (renforce au lieu d'affaiblir) ; simple répétition d'une prémisse.`),
+  ],
+  rc: [
+    C(`Lecture active`, `Résumer chaque paragraphe en 5 mots dans sa tête ou sur le brouillon. Repérer la conclusion de l'auteur.`),
+    C(`Mots-indices`, `However, yet, but : changement de direction.<br>Moreover, also : ajout.<br>Therefore, thus : conclusion.`),
+    C(`Les 5 types de questions`, `Main idea, detail, inference, function (rôle d'un passage), tone (attitude de l'auteur).`),
+    C(`Reconnaître la bonne réponse`, `Elle reformule le texte.<br>Les mauvaises : trop extrêmes, hors du texte, ou vraies mais sans rapport avec la question.`),
+    C(`Gestion du temps`, `Environ 2 à 3 minutes pour lire un passage, puis environ 1 minute par question.`),
+    C(`Questions de fonction`, `"The author mentions X in order to…" : quel rôle X joue-t-il dans le raisonnement ? (exemple, objection, contraste…)`),
+  ],
+  ds: [
+    C(`Les 5 réponses de Data Sufficiency`, `A : (1) seul suffit<br>B : (2) seul suffit<br>C : il faut les deux<br>D : chacun suffit seul<br>E : même ensemble, insuffisant`),
+    C(`La méthode AD / BCE`, `Si (1) suffit : réponse A ou D.<br>Sinon : B, C ou E.<br>Puis on évalue (2) seul.`),
+    C(`Suffisant, ça veut dire quoi ?`, `Une valeur unique, ou une réponse oui/non certaine.<br>Inutile de calculer jusqu'au bout.`),
+    C(`Questions oui / non`, `« Toujours oui » ou « toujours non » : suffisant.<br>« Parfois oui, parfois non » : insuffisant.`),
+    C(`Tester des nombres`, `Essayer 0, 1, −1, une fraction, un grand nombre. Chercher un contre-exemple.`),
+    C(`Piège : mélanger les énoncés`, `Quand on évalue (2) seul, on oublie totalement (1).`),
+    C(`Équations et inconnues`, `n équations indépendantes pour n inconnues, en règle générale. Mais une expression comme x + y peut suffire sans connaître x et y.`),
+  ],
+  di: [
+    C(`Les 5 formats de Data Insights`, `Data Sufficiency, Multi-Source Reasoning, Table Analysis, Graphics Interpretation, Two-Part Analysis.<br>Calculatrice disponible uniquement dans cette section.`),
+    C(`Table Analysis`, `Trier mentalement les colonnes. Chaque affirmation est Yes / No. Toutes doivent être justes pour gagner le point.`),
+    C(`Graphics Interpretation`, `Lire d'abord le titre, les axes et les unités. Estimer avant de calculer.`),
+    C(`Two-Part Analysis`, `Une réponse par colonne. Les deux colonnes peuvent parfois avoir la même réponse.`),
+    C(`Multi-Source Reasoning`, `Plusieurs onglets. Noter dès la première lecture où se trouve chaque information.`),
+    C(`Gestion du temps`, `Environ 2 min 15 par question. Les questions MSR prennent plus longtemps : ne pas s'y enliser.`),
+  ],
+};
+const STEPS = [
+  { n: 1, kind: 'exam', label: ['Diagnostic'], title: 'Diagnostic', week: 'Semaine 1', desc: `Un premier examen blanc complet, dans les conditions réelles. Il mesure le niveau de départ et désigne les thèmes prioritaires du parcours.` },
+  { n: 2, kind: 'theme', theme: 'arith', label: ['Arithmétique'], title: 'Arithmétique et propriétés des nombres', week: 'Semaine 2', desc: `Fractions, pourcentages, ratios, divisibilité, restes, puissances.` },
+  { n: 3, kind: 'theme', theme: 'algebra', label: ['Algèbre'], title: 'Algèbre', week: 'Semaine 3', desc: `Équations, inéquations, valeurs absolues, exposants, fonctions, suites.` },
+  { n: 4, kind: 'theme', theme: 'cr', label: ['Critical', 'Reasoning'], title: 'Critical Reasoning', week: 'Semaine 4', desc: `Structure des arguments et types de questions : assumption, weaken, strengthen, inference, paradox, evaluate.` },
+  { n: 5, kind: 'theme', theme: 'ds', label: ['Data', 'Sufficiency'], title: 'Data Sufficiency', week: 'Semaine 5', desc: `La méthode AD / BCE et les pièges classiques de suffisance.` },
+  { n: 6, kind: 'theme', theme: 'rc', label: ['Reading', 'Comprehension'], title: 'Reading Comprehension', week: 'Semaine 6', desc: `Lecture active, idée principale, détails, inférences et rôle des passages.` },
+  { n: 7, kind: 'exam', label: ['Examen', 'blanc 2'], title: 'Examen blanc 2 : mi-parcours', week: 'Semaine 7', desc: `Mesurer la progression depuis le diagnostic et réajuster les priorités.` },
+  { n: 8, kind: 'theme', theme: 'wp', label: ['Word', 'problems'], title: 'Word problems, statistiques et probabilités', week: 'Semaine 8', desc: `Vitesses, travail, mélanges, intérêts, moyennes, combinatoire, probabilités.` },
+  { n: 9, kind: 'theme', theme: 'di', label: ['Data', 'Insights'], title: 'Data Insights : tableaux, graphiques, Two-Part, MSR', week: 'Semaine 9', desc: `Les quatre autres formats de la section Data Insights, avec la calculatrice.` },
+  { n: 10, kind: 'exam', label: ['Examen', 'blanc 3'], title: 'Examen blanc 3', week: 'Semaine 10', desc: `Simulation complète. Entraînez-vous à choisir l'ordre des sections et à gérer la pause.` },
+  { n: 11, kind: 'exam', label: ['Examen', 'blanc 4'], title: 'Examen blanc 4', week: 'Semaine 11', desc: `Simulation complète. Concentrez-vous sur la gestion du temps et la fonction review & edit.` },
+  { n: 12, kind: 'exam', final: true, label: ['Examen', 'final'], title: 'Examen final et révision', week: 'Semaine 12', desc: `Dernière simulation, puis révision du carnet d'erreurs. Pas de nouvelle notion cette semaine.` },
+];
+
+// ===================== GMAT Academy V1 =====================
+const ALL_Q = [...QB_QUANT, ...QB_CR, ...QB_RC, ...QB_DS, ...QB_DI];
+const QMAP = Object.fromEntries(ALL_Q.map(q => [q.id, q]));
+const secOf = q => THEMES[q.t].sec;
+const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+const SEC_TIME = 45 * 60, BREAK_TIME = 10 * 60, MAX_EDITS = 3;
+const TARGET_SEC = { Q: Math.round(SEC_TIME / 21), V: Math.round(SEC_TIME / 23), DI: Math.round(SEC_TIME / 20) };
+const MBA_URL = 'https://www.mba.com';
+
+// ---------- Stockage local ----------
+const KEY = 'gmatAcademy.v1';
+let DB;
+function freshDB() { return { answers: [], errors: {}, seen: {}, exams: [], official: [], steps: {}, examRun: null }; }
+function load() {
+  try { DB = Object.assign(freshDB(), JSON.parse(localStorage.getItem(KEY) || '{}')); }
+  catch (e) { DB = freshDB(); }
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch (e) { /* stockage indisponible */ } }
+
+// ---------- Utilitaires ----------
+const $ = s => document.querySelector(s);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const fmt = s => { s = Math.max(0, Math.round(s)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+const pct = (c, n) => n ? Math.round(100 * c / n) : 0;
+const strip = h => h.replace(/<[^>]+>/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+const dateFR = ts => new Date(ts).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function isAnswered(q, a) {
+  if (q.k === 'multi') return Array.isArray(a) && q.items.every((_, i) => a[i] != null);
+  return a != null;
+}
+function isCorrect(q, a) {
+  if (!isAnswered(q, a)) return false;
+  if (q.k === 'multi') return q.items.every((it, i) => a[i] === it.a);
+  return a === q.a;
+}
+function errType(q, secs, answered) {
+  if (!answered || secs > 150) return 'temps';
+  if (q.d === 1) return 'inattention';
+  return 'notion';
+}
+const ERR_LABEL = { notion: 'Notion non maîtrisée', temps: 'Question trop longue', inattention: 'Erreur sur question facile' };
+
+function recordAnswer(q, a, secs, mode) {
+  const c = isCorrect(q, a);
+  DB.answers.push({ id: q.id, t: q.t, c, s: Math.round(secs), m: mode, at: Date.now() });
+  DB.seen[q.id] = (DB.seen[q.id] || 0) + 1;
+  const e = DB.errors[q.id];
+  if (!c) DB.errors[q.id] = { n: (e ? e.n : 0) + 1, last: Date.now(), type: errType(q, secs, isAnswered(q, a)), resolved: false };
+  else if (e && mode === 'errors') e.resolved = true;
+  return c;
+}
+
+// Sélection : les questions les moins vues d'abord, puis regroupement par passage / MSR
+function leastSeen(pool, n) {
+  return shuffle(pool).sort((a, b) => (DB.seen[a.id] || 0) - (DB.seen[b.id] || 0)).slice(0, n);
+}
+function groupOrder(list) {
+  const key = q => q.p || q.grp || q.id, order = [], groups = {};
+  list.forEach(q => { const k = key(q); if (!groups[k]) { groups[k] = []; order.push(k); } groups[k].push(q); });
+  return order.flatMap(k => groups[k]);
+}
+
+// ---------- État de l'interface ----------
+const ui = { view: 'home', step: null, pr: null, cur: null, qStart: 0, calc: false, calcVal: '', tab: 0, result: null, msg: '' };
+function go(view, extra = {}) {
+  Object.assign(ui, { view, msg: '' }, extra);
+  ui.calc = false;
+  render();
+  window.scrollTo(0, 0);
+}
+
+// ---------- Statut des étapes ----------
+function stepState(st) {
+  if (st.kind === 'exam') return { done: DB.exams.some(x => x.step === st.n) };
+  const s = DB.steps[st.n] || {};
+  return { ...s, done: !!(s.cards && s.quiz != null && s.timed != null) };
+}
+function latestExam() { return DB.exams[DB.exams.length - 1] || null; }
+function priorityThemes() {
+  const ex = latestExam(); if (!ex) return [];
+  return Object.entries(ex.themeAcc).filter(([, v]) => v.n && v.c / v.n < 0.6).map(([t]) => t);
+}
+function defaultStep() { const s = STEPS.find(s => !stepState(s).done); return (s || STEPS[0]).n; }
+
+// ===================== RENDU GÉNÉRAL =====================
+function render() {
+  const inExam = ui.view === 'exam';
+  $('#nav').innerHTML = inExam ? '' : [['home', 'Parcours'], ['errors', "Carnet d'erreurs"], ['progress', 'Progression'], ['official', 'Scores officiels']]
+    .map(([v, l]) => `<button data-act="nav" data-arg="${v}" class="${ui.view === v ? 'on' : ''}">${l}</button>`).join('');
+  const V = { home: viewHome, cards: viewCards, practice: viewPractice, practiceResult: viewPracticeResult, exam: viewExam, examResult: viewExamResult, errors: viewErrors, progress: viewProgress, official: viewOfficial }[ui.view];
+  $('#app').innerHTML = V();
+  $('#calc').innerHTML = ui.calc ? calcHTML() : '';
+  if (ui.view === 'progress') drawCharts();
+}
+
+// ===================== PARCOURS =====================
+function circuitSVG(cols) {
+  const W = cols === 4 ? 1000 : 520, rowH = cols === 4 ? 170 : 150, marg = cols === 4 ? 140 : 120, ext = cols === 4 ? 20 : 10, R = rowH / 2;
+  const top = 78, left = marg, right = W - marg, colW = (right - left) / (cols - 1), rows = Math.ceil(STEPS.length / cols);
+  const H = top + (rows - 1) * rowH + 90;
+  const pos = STEPS.map((_, i) => { const r = Math.floor(i / cols), c = i % cols; return { x: r % 2 === 0 ? left + c * colW : right - c * colW, y: top + r * rowH }; });
+  let d = `M 30 ${top}`;
+  for (let r = 0; r < rows; r++) {
+    const y = top + r * rowH, even = r % 2 === 0, last = r === rows - 1;
+    const ex = last ? (even ? W - 30 : 30) : (even ? right + ext : left - ext);
+    d += ` L ${ex} ${y}`;
+    if (!last) d += ` A ${R} ${R} 0 0 ${even ? 1 : 0} ${ex} ${y + rowH}`;
+  }
+  const lastRow = rows - 1, finX = lastRow % 2 === 0 ? W - 30 : 30, finY = top + lastRow * rowH;
+  const prio = priorityThemes(), sel = ui.step, colors = { Q: 'var(--q)', V: 'var(--v)', DI: 'var(--di)' };
+  let s = `<svg class="circuit" viewBox="0 0 ${W} ${H}" role="group" aria-label="Parcours en 12 étapes">
+  <path d="${d}" fill="none" stroke="#3A4670" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="${d}" fill="none" stroke="#2A3455" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="${d}" fill="none" stroke="var(--signal)" stroke-width="2.5" stroke-dasharray="14 12" opacity=".75"/>`;
+  // Drapeau de départ
+  s += `<g transform="translate(30 ${top - 58})"><line x1="0" y1="0" x2="0" y2="40" stroke="#fff" stroke-width="2.5"/>`;
+  for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) s += `<rect x="${2 + i * 7}" y="${j * 7}" width="7" height="7" fill="${(i + j) % 2 ? '#172036' : '#fff'}"/>`;
+  s += `<text x="34" y="16" fill="#fff" font-weight="800" font-size="14" font-family="var(--ui)">START</text></g>`;
+  // Trophée
+  s += `<g transform="translate(${finX} ${finY - 52})"><path d="M-15,-14 h30 v8 a15 15 0 0 1 -30 0 z" fill="var(--signal)"/><path d="M-15,-10 h-7 a7 7 0 0 0 7 9 M15,-10 h7 a7 7 0 0 1 -7 9" fill="none" stroke="var(--signal)" stroke-width="2.5"/><rect x="-3" y="9" width="6" height="8" fill="var(--signal)"/><rect x="-11" y="17" width="22" height="5" rx="1" fill="var(--signal)"/></g>`;
+  STEPS.forEach((st, i) => {
+    const { x, y } = pos[i], ss = stepState(st), isExam = st.kind === 'exam';
+    const fill = isExam ? 'var(--signal)' : colors[THEMES[st.theme].sec], tc = isExam ? '#172036' : '#fff';
+    const isPrio = !isExam && prio.includes(st.theme), r = cols === 4 ? 24 : 22;
+    s += `<g class="node" data-act="step" data-arg="${st.n}" tabindex="0" role="button" aria-label="Étape ${st.n} : ${st.title}${ss.done ? ', terminée' : ''}">`;
+    if (sel === st.n) s += `<circle cx="${x}" cy="${y}" r="${r + 9}" fill="none" stroke="#fff" stroke-width="2.5"/>`;
+    s += `<circle class="ring" cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="#172036" stroke-width="3"/>
+      <text x="${x}" y="${y + 6}" text-anchor="middle" font-weight="800" font-size="17" fill="${tc}" font-family="var(--ui)">${st.n}</text>`;
+    if (ss.done) s += `<circle cx="${x + r - 2}" cy="${y - r + 2}" r="9" fill="var(--ok)" stroke="#172036" stroke-width="2"/><path d="M${x + r - 6} ${y - r + 2} l3 3 l5 -6" fill="none" stroke="#fff" stroke-width="2.2"/>`;
+    if (isPrio) s += `<circle cx="${x - r + 2}" cy="${y - r + 2}" r="9" fill="var(--bad)" stroke="#172036" stroke-width="2"/><text x="${x - r + 2}" y="${y - r + 7}" text-anchor="middle" font-weight="800" font-size="13" fill="#fff">!</text>`;
+    st.label.forEach((ln, k) => { s += `<text x="${x}" y="${y + r + 22 + k * 17}" text-anchor="middle" font-size="15" font-weight="600" fill="#E3E8F2" font-family="var(--ui)">${ln}</text>`; });
+    s += `</g>`;
+  });
+  return s + `</svg>`;
+}
+function viewHome() {
+  if (ui.step == null) ui.step = defaultStep();
+  const done = STEPS.filter(s => stepState(s).done).length;
+  const cols = window.innerWidth < 700 ? 2 : 4;
+  ui.cols = cols;
+  return `<section class="hero"><div class="hero-in">
+    <div class="hero-head"><div><h1>GMAT Academy</h1><p>Douze semaines, douze étapes. Choisissez une étape sur le circuit pour l'ouvrir.</p></div>
+    <div class="hero-stat">${done} étape${done > 1 ? 's' : ''} sur 12 terminée${done > 1 ? 's' : ''}</div></div>
+    ${circuitSVG(cols)}
+    <div class="legend"><span><i style="background:var(--q)"></i>Quant</span><span><i style="background:var(--v)"></i>Verbal</span><span><i style="background:var(--di)"></i>Data Insights</span><span><i style="background:var(--signal)"></i>Examen blanc</span><span><i style="background:var(--bad)"></i>Thème prioritaire</span></div>
+  </div></section>
+  <div class="wrap">${DB.examRun ? `<div class="banner"><span>Un examen blanc est en cours (étape ${DB.examRun.step}). Le chronomètre reprendra là où il s'était arrêté.</span><button class="btn sig" data-act="resumeExam">Reprendre l'examen</button></div>` : ''}${stepPanel(STEPS[ui.step - 1])}</div>`;
+}
+function stepPanel(st) {
+  const ss = stepState(st);
+  let chip, body;
+  if (st.kind === 'exam') {
+    chip = `<span class="chip X">Examen blanc</span>`;
+    const past = DB.exams.filter(x => x.step === st.n);
+    body = `<div class="actions">
+      <button class="act" data-act="examSetup" data-arg="${st.n}" ${DB.examRun ? 'disabled' : ''}><b>${st.n === 1 ? 'Passer le diagnostic' : "Commencer l'examen blanc"}</b><span>64 questions en 2 h 15, 3 sections de 45 min, ordre au choix, pause de 10 min</span><span class="st ${ss.done ? 'done' : ''}">${ss.done ? 'Fait le ' + dateFR(past[past.length - 1].date) : 'Pas encore passé'}</span></button>
+      ${past.length ? `<button class="act" data-act="showExam" data-arg="${past[past.length - 1].id}"><b>Voir l'analyse</b><span>Score estimé, thèmes à travailler, correction détaillée</span><span class="st">${past[past.length - 1].scores.total} estimé</span></button>` : ''}
+      ${st.final ? `<button class="act" data-act="practice" data-arg="errors"><b>Réviser mon carnet d'erreurs</b><span>Jusqu'à 10 questions ratées, avec correction immédiate</span><span class="st">${Object.values(DB.errors).filter(e => !e.resolved).length} erreur(s) à revoir</span></button>` : ''}
+    </div>
+    <div class="official"><h3>Mesure officielle</h3><p class="lead muted">Le score de l'application est une estimation. Pour une mesure fiable, faites aussi passer un Official Practice Exam gratuit sur mba.com, puis enregistrez le résultat pour le suivre dans la progression.</p>
+      <div class="row"><a class="btn ghost sm" href="${MBA_URL}" target="_blank" rel="noopener">Ouvrir mba.com</a><button class="btn ghost sm" data-act="nav" data-arg="official">Saisir un score officiel</button></div></div>`;
+  } else {
+    const th = THEMES[st.theme], sec = th.sec;
+    chip = `<span class="chip ${sec}">${SECTIONS[sec].short}</span>${priorityThemes().includes(st.theme) ? ' <span class="chip prio">Prioritaire</span>' : ''}`;
+    const pool = ALL_Q.filter(q => q.t === st.theme), seen = pool.filter(q => DB.seen[q.id]).length;
+    const ans = DB.answers.filter(a => a.t === st.theme), ok = ans.filter(a => a.c).length;
+    body = `<p class="muted">${seen} question${seen > 1 ? 's' : ''} vue${seen > 1 ? 's' : ''} sur ${pool.length}${ans.length ? `, ${pct(ok, ans.length)} % de réussite` : ''}</p>
+    <div class="actions">
+      <button class="act" data-act="cards" data-arg="${st.n}"><b>Fiches de notions</b><span>${CARDS[st.theme].length} cartes à retourner</span><span class="st ${ss.cards ? 'done' : ''}">${ss.cards ? 'Lues' : 'À lire'}</span></button>
+      <button class="act" data-act="practice" data-arg="quiz:${st.n}"><b>Quiz</b><span>10 questions, correction après chaque réponse</span><span class="st ${ss.quiz != null ? 'done' : ''}">${ss.quiz != null ? 'Meilleur score : ' + ss.quiz + ' %' : 'À faire'}</span></button>
+      <button class="act" data-act="practice" data-arg="timed:${st.n}"><b>Exercice chronométré</b><span>8 questions au rythme de l'examen, correction à la fin</span><span class="st ${ss.timed != null ? 'done' : ''}">${ss.timed != null ? 'Meilleur score : ' + ss.timed + ' %' : 'À faire'}</span></button>
+    </div>`;
+  }
+  return `<section class="panel"><div class="panel-head"><div class="step-num">${String(st.n).padStart(2, '0')}</div><div style="flex:1;min-width:220px">
+    <div class="row" style="margin-bottom:6px">${chip}<span class="muted">${st.week}</span></div><h2>${st.title}</h2><p class="lead" style="margin:0">${st.desc}</p></div></div>${body}</section>`;
+}
+
+// ===================== FICHES =====================
+function viewCards() {
+  const st = STEPS[ui.step - 1], cards = CARDS[st.theme], f = ui.flipped || new Set();
+  return `<div class="wrap"><button class="btn ghost sm" data-act="nav" data-arg="home">Retour au parcours</button>
+  <h1 style="margin-top:18px">${st.title} : fiches</h1><p class="lead muted">Cliquez sur une carte pour la retourner. Les fiches sont marquées comme lues une fois toutes retournées.</p>
+  <div class="cards">${cards.map((c, i) => `<button class="fcard ${f.has(i) ? 'seen' : ''}" data-act="flip" data-arg="${i}" aria-label="Retourner la carte"><div class="fcard-in"><div class="face front">${c.f}<small>Cliquez pour voir la réponse</small></div><div class="face back">${c.b}</div></div></button>`).join('')}</div>
+  <p class="muted" style="margin-top:18px">${f.size} carte${f.size > 1 ? 's' : ''} retournée${f.size > 1 ? 's' : ''} sur ${cards.length}</p></div>`;
+}
+
+// ===================== RENDU D'UNE QUESTION =====================
+// opts : { locked, reveal } ; reveal affiche bonnes et mauvaises réponses
+function stimHTML(q) {
+  if (q.p) { const P = PASSAGES[q.p]; return `<div class="stim"><h4>${P.title}</h4>${P.text}</div>`; }
+  if (q.tabs) {
+    const t = Math.min(ui.tab, q.tabs.length - 1);
+    return `<div class="stim"><div class="tabs" role="tablist">${q.tabs.map((tb, i) => `<button role="tab" aria-selected="${i === t}" class="${i === t ? 'on' : ''}" data-act="tab" data-arg="${i}">${tb.title}</button>`).join('')}</div>${q.tabs[t].html}</div>`;
+  }
+  if (q.stim) return `<div class="stim">${q.stim}</div>`;
+  return '';
+}
+function questionHTML(q, a, o = {}) {
+  const dis = o.locked ? 'disabled' : '';
+  let body = '';
+  if (q.k === 'mcq') {
+    body = `<div class="opts" role="radiogroup">${q.o.map((t, i) => {
+      let c = a === i ? 'sel' : '';
+      if (o.reveal) c = i === q.a ? 'ok' : (a === i ? 'ko' : '');
+      return `<button class="opt ${c}" data-act="pick" data-arg="${i}" role="radio" aria-checked="${a === i}" ${dis}><span class="L">${LETTERS[i]}</span><span>${t}</span></button>`;
+    }).join('')}</div>`;
+  } else if (q.layout === 'select') {
+    body = `<div class="gi">${q.items.map((it, j) => {
+      const v = a ? a[j] : null, c = o.reveal ? (v === it.a ? 'ok' : 'ko') : '';
+      return `<p>${it.s} <select class="${c}" data-item="${j}" ${dis}><option value="">Choisir</option>${it.o.map((t, i) => `<option value="${i}" ${v === i ? 'selected' : ''}>${t}</option>`).join('')}</select>${o.reveal && v !== it.a ? ` <span class="muted">(réponse : ${it.o[it.a]})</span>` : ''}</p>`;
+    }).join('')}</div>`;
+  } else if (q.layout === 'yn') {
+    body = `<table class="mtable"><thead><tr><th class="c">Yes</th><th class="c">No</th><th>Statement</th></tr></thead><tbody>${q.items.map((it, j) => `<tr>${it.o.map((_, i) => {
+      const v = a ? a[j] : null; let c = v === i ? 'sel' : '';
+      if (o.reveal) c = i === it.a ? 'ok' : (v === i ? 'ko' : '');
+      return `<td class="c"><button class="rad ${c}" data-act="pickm" data-arg="${j}:${i}" aria-label="${it.o[i]}" ${dis}></button></td>`;
+    }).join('')}<td>${it.s}</td></tr>`).join('')}</tbody></table>`;
+  } else { // grid : Two-Part
+    body = `<table class="mtable"><thead><tr>${q.cols.map(c => `<th class="c">${c}</th>`).join('')}<th></th></tr></thead><tbody>${q.opts.map((t, i) => `<tr>${q.items.map((it, j) => {
+      const v = a ? a[j] : null; let c = v === i ? 'sel' : '';
+      if (o.reveal) c = i === it.a ? 'ok' : (v === i ? 'ko' : '');
+      return `<td class="c"><button class="rad ${c}" data-act="pickm" data-arg="${j}:${i}" aria-label="${esc(q.cols[j])}" ${dis}></button></td>`;
+    }).join('')}<td>${t}</td></tr>`).join('')}</tbody></table>`;
+  }
+  const stim = stimHTML(q);
+  const main = `<div>${q.sub ? `<div class="qsub">${q.sub}</div>` : ''}<div class="qtext">${q.q}</div>${body}${o.feedback || ''}</div>`;
+  return stim ? `<div class="qgrid split">${stim}${main}</div>` : `<div class="qgrid">${main}</div>`;
+}
+function feedbackHTML(q, a) {
+  const c = isCorrect(q, a);
+  return `<div class="feedback ${c ? '' : 'ko'}"><b>${c ? 'Bonne réponse.' : 'Réponse incorrecte.'}</b>${q.e}</div>`;
+}
+// Mise à jour de la réponse en cours (sans re-rendu, pour garder le défilement des passages)
+function setPick(arg, isMulti) {
+  const q = QMAP[ui.cur.qid];
+  if (ui.cur.locked) return;
+  if (!isMulti) ui.cur.a = +arg;
+  else { const [j, i] = arg.split(':').map(Number); const a = Array.isArray(ui.cur.a) ? ui.cur.a.slice() : q.items.map(() => null); a[j] = i; ui.cur.a = a; }
+  refreshPicks(q);
+}
+function refreshPicks(q) {
+  const a = ui.cur.a;
+  if (q.k === 'mcq') document.querySelectorAll('[data-act="pick"]').forEach(b => { const on = +b.dataset.arg === a; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+  else document.querySelectorAll('[data-act="pickm"]').forEach(b => { const [j, i] = b.dataset.arg.split(':').map(Number); b.classList.toggle('sel', Array.isArray(a) && a[j] === i); });
+  const v = $('#validate'); if (v) v.disabled = !isAnswered(q, a);
+}
+
+// ===================== ENTRAÎNEMENT (quiz, chrono, erreurs) =====================
+function startPractice(arg) {
+  let mode, step = null, theme = null, pool, n;
+  if (arg.startsWith('errors')) {
+    mode = 'errors'; theme = arg.split(':')[1] || null;
+    pool = Object.entries(DB.errors).filter(([id, e]) => !e.resolved && QMAP[id] && (!theme || QMAP[id].t === theme)).map(([id]) => QMAP[id]);
+    n = 10;
+    if (!pool.length) { go('errors', { msg: 'Aucune erreur à réviser pour le moment.' }); return; }
+  } else {
+    [mode, step] = arg.split(':'); step = +step; theme = STEPS[step - 1].theme;
+    pool = ALL_Q.filter(q => q.t === theme); n = mode === 'quiz' ? 10 : 8;
+  }
+  const qs = groupOrder(leastSeen(pool, n));
+  const timeLimit = mode === 'timed' ? qs.reduce((s, q) => s + TARGET_SEC[secOf(q)], 0) : null;
+  ui.pr = { mode, step, theme, qids: qs.map(q => q.id), i: 0, ans: [], times: [], results: [], remaining: timeLimit, limit: timeLimit };
+  ui.tab = 0; showPracticeQ(); go('practice');
+}
+function showPracticeQ() { ui.cur = { qid: ui.pr.qids[ui.pr.i], a: null, locked: false, fb: null }; ui.qStart = Date.now(); ui.tab = 0; }
+function viewPractice() {
+  const P = ui.pr, q = QMAP[ui.cur.qid], titles = { quiz: 'Quiz', timed: 'Exercice chronométré', errors: "Révision du carnet d'erreurs" };
+  const title = P.mode === 'errors' ? titles.errors : `${titles[P.mode]} : ${THEMES[P.theme].name}`;
+  const canCalc = secOf(q) === 'DI';
+  const btn = ui.cur.locked
+    ? `<button class="btn sig" data-act="prNext">${P.i + 1 < P.qids.length ? 'Question suivante' : 'Voir le bilan'}</button>`
+    : `<button class="btn" id="validate" data-act="prValidate" ${isAnswered(q, ui.cur.a) ? '' : 'disabled'}>${P.mode === 'timed' ? 'Valider et continuer' : 'Valider'}</button>`;
+  return `<div class="wrap"><div class="row" style="justify-content:space-between;margin-bottom:14px"><button class="btn ghost sm" data-act="quitPractice">Quitter</button><span class="muted">${title}</span></div>
+  <div class="qbar"><span>Question ${P.i + 1} sur ${P.qids.length}</span><span class="sp"></span>${canCalc ? `<button class="btn sm" data-act="calc">Calculatrice</button>` : ''}${P.limit ? `<span class="timer" id="timer">${fmt(P.remaining)}</span>` : ''}</div>
+  <div class="qbox">${questionHTML(q, ui.cur.a, { locked: ui.cur.locked, reveal: ui.cur.locked, feedback: ui.cur.fb })}<div class="qfoot">${btn}</div></div></div>`;
+}
+function prValidate() {
+  const P = ui.pr, q = QMAP[ui.cur.qid], secs = (Date.now() - ui.qStart) / 1000;
+  const c = recordAnswer(q, ui.cur.a, secs, P.mode); save();
+  P.ans.push(ui.cur.a); P.times.push(secs); P.results.push(c);
+  if (P.mode === 'timed') { prNext(); return; }
+  ui.cur.locked = true; ui.cur.fb = feedbackHTML(q, ui.cur.a); render();
+}
+function prNext() {
+  const P = ui.pr;
+  if (P.i + 1 < P.qids.length) { P.i++; showPracticeQ(); render(); window.scrollTo(0, 0); }
+  else finishPractice();
+}
+function finishPractice(timeout) {
+  const P = ui.pr;
+  if (timeout) { // questions restantes comptées fausses
+    for (let k = P.ans.length; k < P.qids.length; k++) { const q = QMAP[P.qids[k]]; recordAnswer(q, null, 0, P.mode); P.ans.push(null); P.times.push(0); P.results.push(false); }
+  }
+  const score = pct(P.results.filter(Boolean).length, P.qids.length);
+  if (P.step) { const s = DB.steps[P.step] = DB.steps[P.step] || {}; const k = P.mode === 'quiz' ? 'quiz' : 'timed'; s[k] = Math.max(s[k] ?? 0, score); }
+  P.score = score; P.timeout = !!timeout; save();
+  go('practiceResult');
+}
+function reviewList(qids, ans, times) {
+  return qids.map((id, k) => { const q = QMAP[id], c = isCorrect(q, ans[k]);
+    return `<details class="review-item"><summary><span class="dot ${c ? 'ok' : 'ko'}"></span><span><b>Q${k + 1}.</b> ${esc(strip(q.q).slice(0, 110))}${strip(q.q).length > 110 ? '…' : ''}</span><span class="muted" style="margin-left:auto;white-space:nowrap">${fmt(times[k] || 0)}</span></summary>
+    <div style="margin-top:12px">${questionHTML(q, ans[k], { locked: true, reveal: true })}<div class="expl">${q.e}</div></div></details>`; }).join('');
+}
+function viewPracticeResult() {
+  const P = ui.pr, ok = P.results.filter(Boolean).length, tot = P.times.reduce((a, b) => a + b, 0);
+  return `<div class="wrap"><h1>Bilan</h1>${P.timeout ? `<p class="err">Temps écoulé : les questions non traitées sont comptées fausses.</p>` : ''}
+  <div class="kpis"><div class="kpi big"><b>${P.score} %</b><span>${ok} bonne${ok > 1 ? 's' : ''} réponse${ok > 1 ? 's' : ''} sur ${P.qids.length}</span></div><div class="kpi"><b>${fmt(tot / P.qids.length)}</b><span>temps moyen par question</span></div><div class="kpi"><b>${P.qids.length - ok}</b><span>ajoutée${P.qids.length - ok > 1 ? 's' : ''} au carnet d'erreurs</span></div></div>
+  <div class="row"><button class="btn sig" data-act="practice" data-arg="${P.mode === 'errors' ? 'errors' + (P.theme ? ':' + P.theme : '') : P.mode + ':' + P.step}">Recommencer avec d'autres questions</button><button class="btn ghost" data-act="nav" data-arg="${P.mode === 'errors' ? 'errors' : 'home'}">${P.mode === 'errors' ? "Retour au carnet d'erreurs" : 'Retour au parcours'}</button></div>
+  <div class="card"><h3>Correction</h3>${reviewList(P.qids, P.ans, P.times)}</div></div>`;
+}
+
+// ===================== EXAMEN BLANC =====================
+const ORDERS = [['Q', 'V', 'DI'], ['Q', 'DI', 'V'], ['V', 'Q', 'DI'], ['V', 'DI', 'Q'], ['DI', 'Q', 'V'], ['DI', 'V', 'Q']];
+function buildSection(sec) {
+  let list;
+  if (sec === 'Q') list = shuffle(['arith', 'algebra', 'wp'].flatMap(t => leastSeen(ALL_Q.filter(q => q.t === t), 7)));
+  else if (sec === 'V') {
+    const used = p => QB_RC.filter(q => q.p === p).reduce((s, q) => s + (DB.seen[q.id] || 0), 0);
+    const ps = shuffle(Object.keys(PASSAGES)).sort((a, b) => used(a) - used(b)).slice(0, 2);
+    const cr = shuffle(leastSeen(QB_CR, 15));
+    list = [...cr.slice(0, 4), ...QB_RC.filter(q => q.p === ps[0]), ...cr.slice(4, 11), ...QB_RC.filter(q => q.p === ps[1]), ...cr.slice(11)];
+  } else {
+    const ds = leastSeen(QB_DS, 10), msr = QB_DI.filter(q => q.grp), others = leastSeen(QB_DI.filter(q => !q.grp), 7);
+    const singles = shuffle([...ds, ...others]);
+    list = [...singles.slice(0, 11), ...msr, ...singles.slice(11)];
+  }
+  return { sec, qids: list.map(q => q.id), ans: list.map(() => null), times: list.map(() => 0), marks: [], edited: [], remaining: SEC_TIME, done: false };
+}
+function examSetupHTML(stepN) {
+  return `<div class="wrap"><button class="btn ghost sm" data-act="nav" data-arg="home">Retour au parcours</button>
+  <h1 style="margin-top:18px">${STEPS[stepN - 1].title}</h1>
+  <div class="card"><h3>Règles, identiques à l'examen réel</h3><ul class="lead" style="padding-left:20px;margin:0">
+  <li>3 sections de 45 minutes : Quant (21 questions), Verbal (23), Data Insights (20).</li>
+  <li>Vous devez répondre à chaque question pour passer à la suivante. Vous pouvez marquer une question pour la revoir.</li>
+  <li>S'il reste du temps à la fin d'une section, l'écran de révision permet de modifier jusqu'à 3 réponses.</li>
+  <li>Une pause optionnelle de 10 minutes est proposée après la 1re ou la 2e section.</li>
+  <li>Calculatrice disponible uniquement en Data Insights. Les questions sans réponse à la fin du temps sont comptées fausses.</li></ul></div>
+  <div class="card"><h3>Ordre des sections</h3><div class="order-list">${ORDERS.map((o, i) => `<label><input type="radio" name="ord" value="${i}" ${i === 0 ? 'checked' : ''}> ${o.map(s => SECTIONS[s].name).join(', puis ')}</label>`).join('')}</div>
+  <button class="btn sig" data-act="examStart" data-arg="${stepN}">Commencer l'examen</button></div></div>`;
+}
+function examStart(stepN) {
+  const ord = ORDERS[+(document.querySelector('input[name=ord]:checked') || { value: 0 }).value];
+  DB.examRun = { step: stepN, order: ord, sections: ord.map(buildSection), cur: 0, qi: 0, phase: 'q', breakTaken: false, breakRemaining: BREAK_TIME, started: Date.now() };
+  save(); enterExamQ(); go('exam');
+}
+function enterExamQ() { const R = DB.examRun, S = R.sections[R.cur]; ui.cur = { qid: S.qids[R.qi], a: S.ans[R.qi], orig: S.ans[R.qi], locked: false }; ui.qStart = Date.now(); ui.tab = 0; }
+function viewExam() {
+  const R = DB.examRun;
+  if (!R) return examSetupHTML(ui.setupStep);
+  const S = R.sections[R.cur], sname = SECTIONS[S.sec].name;
+  if (R.phase === 'breakOffer') return `<div class="wrap"><div class="card"><h2>Section terminée</h2><p class="lead">Vous pouvez prendre maintenant votre pause optionnelle de 10 minutes. Elle n'est proposée qu'une seule fois pendant l'examen.</p><div class="row"><button class="btn sig" data-act="takeBreak">Prendre la pause de 10 minutes</button><button class="btn ghost" data-act="skipBreak">Continuer sans pause</button></div></div></div>`;
+  if (R.phase === 'break') return `<div class="wrap"><div class="card" style="text-align:center"><h2>Pause</h2><p class="timer" id="timer" style="display:inline-block;font-size:2rem;margin:10px 0">${fmt(R.breakRemaining)}</p><p class="muted">Prochaine section : ${SECTIONS[R.sections[R.cur].sec].name}</p><button class="btn sig" data-act="endBreak">Reprendre l'examen</button></div></div>`;
+  const head = `<div class="row" style="justify-content:space-between;margin-bottom:14px"><span class="muted">Section ${R.cur + 1} sur 3</span><button class="btn ghost sm" data-act="pauseExam">Enregistrer et quitter</button></div>`;
+  const timer = `<span class="timer ${S.remaining < 300 ? 'low' : ''}" id="timer">${fmt(S.remaining)}</span>`;
+  const calcBtn = S.sec === 'DI' ? `<button class="btn sm" data-act="calc">Calculatrice</button>` : '';
+  if (R.phase === 'review') {
+    return `<div class="wrap">${head}<div class="qbar"><span>${sname} : révision</span><span class="sp"></span>${timer}</div><div class="qbox">
+    <p class="lead">Cliquez sur une question pour la revoir. Modifications restantes : <b>${MAX_EDITS - S.edited.length} sur ${MAX_EDITS}</b>. Les questions marquées sont surlignées en jaune.</p>
+    <div class="rv-grid">${S.qids.map((_, i) => `<button class="${S.marks.includes(i) ? 'mk' : ''} ${S.ans[i] == null ? 'na' : ''} ${S.edited.includes(i) ? 'ed' : ''}" data-act="rvOpen" data-arg="${i}" aria-label="Question ${i + 1}${S.marks.includes(i) ? ', marquée' : ''}">${i + 1}</button>`).join('')}</div>
+    <div class="qfoot"><button class="btn sig" data-act="endSection">Terminer la section</button></div></div></div>`;
+  }
+  const q = QMAP[ui.cur.qid], marked = S.marks.includes(R.qi);
+  const editing = R.phase === 'edit', locked = editing && S.edited.length >= MAX_EDITS && !S.edited.includes(R.qi);
+  ui.cur.locked = locked;
+  const foot = editing
+    ? `${locked ? `<span class="muted">Vous avez utilisé vos 3 modifications : cette réponse ne peut plus changer.</span>` : ''}<button class="btn" id="validate" data-act="rvBack" ${isAnswered(q, ui.cur.a) ? '' : 'disabled'}>Revenir à la liste</button>`
+    : `<button class="btn" id="validate" data-act="exValidate" ${isAnswered(q, ui.cur.a) ? '' : 'disabled'}>Valider et continuer</button>`;
+  return `<div class="wrap">${head}<div class="qbar"><span>${sname}, question ${R.qi + 1} sur ${S.qids.length}</span><span class="sp"></span>
+    <button class="btn sm bookmark ${marked ? 'on' : ''}" data-act="mark">${marked ? 'Marquée' : 'Marquer'}</button>${calcBtn}${timer}</div>
+    <div class="qbox">${questionHTML(q, ui.cur.a, { locked })}<div class="qfoot">${foot}</div></div></div>`;
+}
+function exValidate() {
+  const R = DB.examRun, S = R.sections[R.cur];
+  S.ans[R.qi] = ui.cur.a; S.times[R.qi] += (Date.now() - ui.qStart) / 1000;
+  if (R.qi + 1 < S.qids.length) { R.qi++; enterExamQ(); }
+  else R.phase = 'review';
+  save(); render(); window.scrollTo(0, 0);
+}
+function rvOpen(i) { const R = DB.examRun; R.qi = +i; R.phase = 'edit'; enterExamQ(); render(); window.scrollTo(0, 0); }
+function rvBack() {
+  const R = DB.examRun, S = R.sections[R.cur];
+  S.times[R.qi] += (Date.now() - ui.qStart) / 1000;
+  if (!ui.cur.locked && JSON.stringify(ui.cur.a) !== JSON.stringify(ui.cur.orig)) {
+    if (!S.edited.includes(R.qi)) S.edited.push(R.qi);
+    S.ans[R.qi] = ui.cur.a;
+  }
+  R.phase = 'review'; save(); render();
+}
+function endSection() {
+  const R = DB.examRun, S = R.sections[R.cur];
+  if (R.phase === 'q' || R.phase === 'edit') S.times[R.qi] += (Date.now() - ui.qStart) / 1000;
+  S.done = true;
+  if (R.cur === 2) { finishExam(); return; }
+  R.cur++; R.qi = 0;
+  R.phase = R.breakTaken ? 'q' : 'breakOffer';
+  if (R.phase === 'q') enterExamQ();
+  save(); render(); window.scrollTo(0, 0);
+}
+function sectionScore(S) {
+  let w = 0, got = 0;
+  S.qids.forEach((id, i) => { const q = QMAP[id]; w += q.d; if (isCorrect(q, S.ans[i])) got += q.d; });
+  return w ? got / w : 0;
+}
+function finishExam() {
+  const R = DB.examRun, scores = {}, themeAcc = {}, errTypes = { notion: 0, temps: 0, inattention: 0 }, timeSec = {};
+  let fs = [];
+  R.sections.forEach(S => {
+    const f = sectionScore(S); fs.push(f);
+    scores[S.sec] = Math.min(90, Math.max(60, 60 + Math.round(30 * f)));
+    timeSec[S.sec] = S.times.reduce((a, b) => a + b, 0) / S.qids.length;
+    S.qids.forEach((id, i) => {
+      const q = QMAP[id], a = S.ans[i], c = recordAnswer(q, a, S.times[i], 'exam');
+      const ta = themeAcc[q.t] = themeAcc[q.t] || { c: 0, n: 0 }; ta.n++; if (c) ta.c++;
+      if (!c) errTypes[errType(q, S.times[i], isAnswered(q, a))]++;
+    });
+  });
+  scores.total = 205 + 10 * Math.round(60 * fs.reduce((a, b) => a + b, 0) / fs.length);
+  const ex = { id: 'ex' + Date.now(), step: R.step, date: Date.now(), order: R.order, scores, themeAcc, errTypes, timeSec,
+    sections: R.sections.map(S => ({ sec: S.sec, qids: S.qids, ans: S.ans, times: S.times.map(Math.round), edited: S.edited.length })) };
+  DB.exams.push(ex); DB.examRun = null; save();
+  go('examResult', { result: ex.id });
+}
+function viewExamResult() {
+  const ex = DB.exams.find(x => x.id === ui.result); if (!ex) return '';
+  const prev = DB.exams.filter(x => x.date < ex.date).pop();
+  const prio = Object.entries(ex.themeAcc).filter(([, v]) => v.c / v.n < 0.6).map(([t]) => t);
+  const stepOf = t => STEPS.find(s => s.theme === t);
+  const totErr = Object.values(ex.errTypes).reduce((a, b) => a + b, 0);
+  return `<div class="wrap"><button class="btn ghost sm" data-act="nav" data-arg="home">Retour au parcours</button>
+  <h1 style="margin-top:18px">${STEPS[ex.step - 1].title} : analyse</h1><p class="muted">Passé le ${dateFR(ex.date)}. Le score est une estimation calculée à partir de la réussite pondérée par la difficulté ; l'algorithme adaptatif officiel n'est pas public.</p>
+  <div class="kpis"><div class="kpi big"><b>${ex.scores.total}</b><span>score total estimé (205 à 805)${prev ? `, ${ex.scores.total - prev.scores.total >= 0 ? '+' : ''}${ex.scores.total - prev.scores.total} depuis l'examen précédent` : ''}</span></div>
+  ${['Q', 'V', 'DI'].map(s => `<div class="kpi"><b>${ex.scores[s]}</b><span>${SECTIONS[s].name} (60 à 90)</span></div>`).join('')}</div>
+  <div class="card"><h3>Réussite par thème</h3><div class="bars">${Object.keys(THEMES).filter(t => ex.themeAcc[t]).map(t => { const v = ex.themeAcc[t], p = pct(v.c, v.n), col = { Q: 'var(--q)', V: 'var(--v)', DI: 'var(--di)' }[THEMES[t].sec];
+    return `<div class="bar-row"><span>${THEMES[t].name}</span><div class="bar"><i style="width:${p}%;background:${col}"></i></div><b>${p} %</b></div>`; }).join('')}</div></div>
+  <div class="card"><h3>Thèmes prioritaires</h3>${prio.length ? `<p class="lead">Ces thèmes sont sous 60 % de réussite. Ils sont signalés en rouge sur le circuit.</p><div class="row">${prio.map(t => `<button class="btn ghost sm" data-act="step" data-arg="${stepOf(t).n}">Étape ${stepOf(t).n} : ${THEMES[t].name}</button>`).join('')}</div>` : `<p>Aucun thème sous 60 % : continuez le parcours dans l'ordre.</p>`}</div>
+  <div class="card"><h3>Gestion du temps et types d'erreurs</h3><table class="list"><thead><tr><th>Section</th><th>Temps moyen par question</th><th>Rythme cible</th></tr></thead><tbody>${['Q', 'V', 'DI'].map(s => `<tr><td>${SECTIONS[s].name}</td><td>${fmt(ex.timeSec[s])}</td><td>${fmt(TARGET_SEC[s])}</td></tr>`).join('')}</tbody></table>
+  <p style="margin-top:16px">${totErr} erreur${totErr > 1 ? 's' : ''} : ${Object.entries(ex.errTypes).map(([k, v]) => `<span class="tag ${k}">${ERR_LABEL[k]} : ${v}</span>`).join(' ')}</p></div>
+  <div class="card"><h3>Correction</h3>${ex.sections.map(S => `<h4 style="margin:16px 0 4px">${SECTIONS[S.sec].name}</h4>${reviewList(S.qids, S.ans, S.times)}`).join('')}</div></div>`;
+}
+
+// ===================== CARNET D'ERREURS =====================
+function viewErrors() {
+  const open = Object.entries(DB.errors).filter(([id, e]) => !e.resolved && QMAP[id]);
+  const fixed = Object.values(DB.errors).filter(e => e.resolved).length;
+  const byType = { notion: 0, temps: 0, inattention: 0 }; open.forEach(([, e]) => byType[e.type]++);
+  let html = `<div class="wrap"><h1>Carnet d'erreurs</h1><p class="lead muted">Chaque question ratée est enregistrée avec son type d'erreur. Une question réussie pendant une révision passe dans les erreurs maîtrisées.</p>${ui.msg ? `<p class="err">${ui.msg}</p>` : ''}
+  <div class="kpis"><div class="kpi big"><b>${open.length}</b><span>erreur${open.length > 1 ? 's' : ''} à revoir</span></div><div class="kpi"><b>${fixed}</b><span>erreur${fixed > 1 ? 's' : ''} maîtrisée${fixed > 1 ? 's' : ''}</span></div>
+  ${Object.entries(byType).map(([k, v]) => `<div class="kpi"><b>${v}</b><span>${ERR_LABEL[k]}</span></div>`).join('')}</div>`;
+  if (!open.length) return html + `<div class="card"><p>Votre carnet est vide. Faites un quiz ou un examen blanc : les questions ratées apparaîtront ici.</p><button class="btn" data-act="nav" data-arg="home">Aller au parcours</button></div></div>`;
+  html += `<div class="row"><button class="btn sig" data-act="practice" data-arg="errors">Réviser 10 erreurs, tous thèmes</button></div>`;
+  Object.keys(THEMES).forEach(t => {
+    const list = open.filter(([id]) => QMAP[id].t === t); if (!list.length) return;
+    html += `<div class="card"><div class="row" style="justify-content:space-between"><h3 style="margin:0">${THEMES[t].name} (${list.length})</h3><button class="btn ghost sm" data-act="practice" data-arg="errors:${t}">Réviser ce thème</button></div>
+    <table class="list" style="margin-top:10px"><thead><tr><th>Question</th><th>Type</th><th>Ratée</th></tr></thead><tbody>${list.sort((a, b) => b[1].last - a[1].last).map(([id, e]) => `<tr><td>${esc(strip(QMAP[id].q).slice(0, 120))}…</td><td><span class="tag ${e.type}">${ERR_LABEL[e.type]}</span></td><td>${e.n} fois</td></tr>`).join('')}</tbody></table></div>`;
+  });
+  return html + `</div>`;
+}
+
+// ===================== PROGRESSION =====================
+function viewProgress() {
+  const n = DB.answers.length, ok = DB.answers.filter(a => a.c).length, last = latestExam();
+  const off = DB.official.slice().sort((a, b) => a.date.localeCompare(b.date)).pop();
+  return `<div class="wrap"><h1>Progression</h1>
+  <div class="kpis"><div class="kpi big"><b>${last ? last.scores.total : '-'}</b><span>dernier score estimé</span></div><div class="kpi"><b>${off ? off.total : '-'}</b><span>dernier score officiel</span></div><div class="kpi"><b>${n}</b><span>questions traitées</span></div><div class="kpi"><b>${n ? pct(ok, n) + ' %' : '-'}</b><span>réussite globale</span></div><div class="kpi"><b>${DB.exams.length}</b><span>examen${DB.exams.length > 1 ? 's' : ''} blanc${DB.exams.length > 1 ? 's' : ''}</span></div></div>
+  ${n ? '' : `<div class="card"><p>Aucune donnée pour l'instant. Commencez par le diagnostic (étape 1) pour obtenir un point de départ.</p><button class="btn" data-act="step" data-arg="1">Ouvrir le diagnostic</button></div>`}
+  <div class="card"><h3>Évolution du score total</h3><p class="muted">Examens blancs de l'application et scores officiels saisis.</p><div class="chartbox"><canvas id="chScore"></canvas></div></div>
+  <div class="card"><h3>Réussite par thème</h3><div class="chartbox"><canvas id="chTheme"></canvas></div></div>
+  <div class="card"><h3>Temps moyen par question</h3><p class="muted">Comparé au rythme de l'examen.</p><div class="chartbox"><canvas id="chTime"></canvas></div></div>
+  <div class="card"><h3>Vos données</h3><p class="lead muted">Les données sont enregistrées dans ce navigateur. Exportez-les pour les conserver ou les transférer.</p><div class="row"><button class="btn ghost sm" data-act="export">Exporter (JSON)</button><button class="btn danger sm" data-act="reset">Tout réinitialiser</button></div></div></div>`;
+}
+let charts = [];
+function drawCharts() {
+  charts.forEach(c => c.destroy()); charts = [];
+  if (!window.Chart) { document.querySelectorAll('.chartbox').forEach(b => b.innerHTML = '<p class="muted">Graphique indisponible : la bibliothèque Chart.js ne s\'est pas chargée.</p>'); return; }
+  Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+  const pts = [...DB.exams.map(e => ({ d: new Date(e.date).toISOString().slice(0, 10), app: e.scores.total })), ...DB.official.map(o => ({ d: o.date, off: o.total }))].sort((a, b) => a.d.localeCompare(b.d));
+  charts.push(new Chart($('#chScore'), { type: 'line', data: { labels: pts.map(p => new Date(p.d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })), datasets: [
+    { label: 'Examen blanc (estimé)', data: pts.map(p => p.app ?? null), borderColor: '#172036', backgroundColor: '#F2B705', pointRadius: 6, spanGaps: true },
+    { label: 'Score officiel mba.com', data: pts.map(p => p.off ?? null), borderColor: '#0F9B8E', backgroundColor: '#0F9B8E', pointStyle: 'rectRot', pointRadius: 8, spanGaps: true, borderDash: [6, 4] }] },
+    options: { maintainAspectRatio: false, scales: { y: { min: 205, max: 805 } } } }));
+  const ths = Object.keys(THEMES), col = { Q: '#2F6FED', V: '#7C4DDB', DI: '#0F9B8E' };
+  charts.push(new Chart($('#chTheme'), { type: 'bar', data: { labels: ths.map(t => THEMES[t].name), datasets: [{ label: 'Réussite (%)', data: ths.map(t => { const a = DB.answers.filter(x => x.t === t); return a.length ? pct(a.filter(x => x.c).length, a.length) : 0; }), backgroundColor: ths.map(t => col[THEMES[t].sec]) }] },
+    options: { maintainAspectRatio: false, indexAxis: 'y', scales: { x: { min: 0, max: 100 } }, plugins: { legend: { display: false } } } }));
+  const secs = ['Q', 'V', 'DI'];
+  charts.push(new Chart($('#chTime'), { type: 'bar', data: { labels: secs.map(s => SECTIONS[s].name), datasets: [
+    { label: 'Votre moyenne (s)', data: secs.map(s => { const a = DB.answers.filter(x => THEMES[x.t].sec === s && x.s > 0); return a.length ? Math.round(a.reduce((m, x) => m + x.s, 0) / a.length) : 0; }), backgroundColor: '#172036' },
+    { label: 'Rythme cible (s)', data: secs.map(s => TARGET_SEC[s]), backgroundColor: '#F2B705' }] }, options: { maintainAspectRatio: false } }));
+}
+
+// ===================== SCORES OFFICIELS =====================
+function viewOfficial() {
+  const list = DB.official.slice().sort((a, b) => b.date.localeCompare(a.date));
+  return `<div class="wrap"><h1>Scores officiels</h1><p class="lead muted">mba.com ne permet pas de récupérer les résultats automatiquement. Après chaque Official Practice Exam, recopiez ici les scores affichés : ils apparaîtront dans la progression à côté des examens blancs de l'application.</p>
+  <a class="btn ghost sm" href="${MBA_URL}" target="_blank" rel="noopener">Ouvrir mba.com</a>
+  <div class="card"><h3>Ajouter un score</h3><div class="form">
+    <label>Date<input type="date" id="o_date" value="${new Date().toISOString().slice(0, 10)}"></label>
+    <label>Score total (205 à 805)<input type="number" id="o_total" min="205" max="805" step="10" placeholder="ex. 615"></label>
+    <label>Quant (60 à 90)<input type="number" id="o_Q" min="60" max="90"></label>
+    <label>Verbal (60 à 90)<input type="number" id="o_V" min="60" max="90"></label>
+    <label>Data Insights (60 à 90)<input type="number" id="o_DI" min="60" max="90"></label>
+    <label>Percentile (facultatif)<input type="number" id="o_pct" min="0" max="100"></label>
+    <label>Examen<input type="text" id="o_note" placeholder="ex. Official Practice Exam 1"></label></div>
+    ${ui.msg ? `<p class="err">${ui.msg}</p>` : ''}<button class="btn sig" data-act="addOfficial">Enregistrer le score</button></div>
+  <div class="card"><h3>Historique</h3>${list.length ? `<table class="list"><thead><tr><th>Date</th><th>Total</th><th>Quant</th><th>Verbal</th><th>DI</th><th>Percentile</th><th>Examen</th><th></th></tr></thead><tbody>${list.map(o => `<tr><td>${dateFR(o.date)}</td><td><b>${o.total}</b></td><td>${o.Q}</td><td>${o.V}</td><td>${o.DI}</td><td>${o.pct ?? '-'}</td><td>${esc(o.note || '')}</td><td><button class="btn ghost sm" data-act="delOfficial" data-arg="${o.id}">Supprimer</button></td></tr>`).join('')}</tbody></table>` : `<p class="muted">Aucun score officiel enregistré.</p>`}</div></div>`;
+}
+function addOfficial() {
+  const v = id => $('#' + id).value.trim(), num = id => v(id) === '' ? null : +v(id);
+  const o = { id: 'of' + Date.now(), date: v('o_date'), total: num('o_total'), Q: num('o_Q'), V: num('o_V'), DI: num('o_DI'), pct: num('o_pct'), note: v('o_note') };
+  if (!o.date) return go('official', { msg: 'Indiquez la date de l’examen.' });
+  if (o.total == null || o.total < 205 || o.total > 805 || (o.total - 205) % 10 !== 0) return go('official', { msg: 'Le score total doit être compris entre 205 et 805 et se terminer par 5 (ex. 615).' });
+  for (const s of ['Q', 'V', 'DI']) if (o[s] == null || o[s] < 60 || o[s] > 90 || !Number.isInteger(o[s])) return go('official', { msg: `Le score ${SECTIONS[s].name} doit être un entier entre 60 et 90.` });
+  DB.official.push(o); save(); go('official');
+}
+
+// ===================== CALCULATRICE (Data Insights) =====================
+function calcHTML() {
+  const keys = ['7', '8', '9', '÷', '4', '5', '6', '×', '1', '2', '3', '−', '0', '.', '%', '+', 'C', '√', '(', ')'];
+  return `<div class="calc" role="dialog" aria-label="Calculatrice"><div class="calc-h"><span>Calculatrice</span><button data-act="calc" aria-label="Fermer">✕</button></div><div class="calc-d" id="calcD">${esc(ui.calcVal || '0')}</div>
+  <div class="calc-k">${keys.map(k => `<button class="${'÷×−+%√()'.includes(k) ? 'op' : ''}" data-act="ck" data-arg="${k}">${k}</button>`).join('')}<button class="eq" style="grid-column:span 4" data-act="ck" data-arg="=">=</button></div></div>`;
+}
+function calcKey(k) {
+  let v = ui.calcVal || '';
+  if (k === 'C') v = '';
+  else if (k === '=' || k === '√' || k === '%') {
+    try {
+      const expr = v.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-');
+      if (!/^[0-9+\-*/(). ]*$/.test(expr) || !expr) throw 0;
+      let r = Function('"use strict";return (' + expr + ')')();
+      if (k === '√') r = Math.sqrt(r); if (k === '%') r = r / 100;
+      v = Number.isFinite(r) ? String(+r.toPrecision(12)) : 'Erreur';
+    } catch (e) { v = 'Erreur'; }
+  } else v = (v === 'Erreur' ? '' : v) + k;
+  ui.calcVal = v; const d = $('#calcD'); if (d) d.textContent = v || '0';
+}
+
+// ===================== CHRONOMÈTRE =====================
+setInterval(() => {
+  const t = $('#timer');
+  if (ui.view === 'practice' && ui.pr && ui.pr.limit) {
+    ui.pr.remaining--; if (t) { t.textContent = fmt(ui.pr.remaining); t.classList.toggle('low', ui.pr.remaining < 60); }
+    if (ui.pr.remaining <= 0) finishPractice(true);
+  }
+  const R = DB.examRun;
+  if (ui.view === 'exam' && R) {
+    if (R.phase === 'break') { R.breakRemaining--; if (t) t.textContent = fmt(R.breakRemaining); if (R.breakRemaining <= 0) endBreak(); }
+    else if (R.phase === 'q' || R.phase === 'review' || R.phase === 'edit') {
+      const S = R.sections[R.cur]; S.remaining--;
+      if (t) { t.textContent = fmt(S.remaining); t.classList.toggle('low', S.remaining < 300); }
+      if (S.remaining % 5 === 0) save();
+      if (S.remaining <= 0) { if (R.phase === 'edit') rvBack(); endSection(); }
+    }
+  }
+}, 1000);
+function endBreak() { const R = DB.examRun; R.breakTaken = true; R.phase = 'q'; enterExamQ(); save(); render(); }
+
+// ===================== ÉVÉNEMENTS =====================
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el || el.disabled) return;
+  const a = el.dataset.act, arg = el.dataset.arg;
+  switch (a) {
+    case 'nav': if (arg === 'home') ui.step = ui.step || null; go(arg); break;
+    case 'home': go('home'); break;
+    case 'step': ui.step = +arg; go('home'); break;
+    case 'cards': ui.step = +arg; ui.flipped = new Set(); go('cards'); break;
+    case 'flip': {
+      el.classList.toggle('flip'); el.classList.add('seen'); ui.flipped.add(+arg);
+      const st = STEPS[ui.step - 1], tot = CARDS[st.theme].length;
+      if (ui.flipped.size === tot) { (DB.steps[st.n] = DB.steps[st.n] || {}).cards = true; save(); }
+      const p = el.closest('.wrap').querySelector('p.muted:last-child'); if (p) p.textContent = `${ui.flipped.size} carte${ui.flipped.size > 1 ? 's' : ''} retournée${ui.flipped.size > 1 ? 's' : ''} sur ${tot}${ui.flipped.size === tot ? ' : fiches marquées comme lues.' : ''}`;
+      break; }
+    case 'practice': startPractice(arg); break;
+    case 'pick': setPick(arg, false); break;
+    case 'pickm': setPick(arg, true); break;
+    case 'tab': ui.tab = +arg; { const q = QMAP[ui.cur.qid]; const s = document.querySelector('.stim'); if (s) s.outerHTML = stimHTML(q); } break;
+    case 'prValidate': prValidate(); break;
+    case 'prNext': prNext(); break;
+    case 'quitPractice': if (confirm('Quitter cet entraînement ? Les réponses déjà validées restent enregistrées.')) go(ui.pr.mode === 'errors' ? 'errors' : 'home'); break;
+    case 'calc': ui.calc = !ui.calc; $('#calc').innerHTML = ui.calc ? calcHTML() : ''; break;
+    case 'ck': calcKey(arg); break;
+    case 'examSetup': ui.setupStep = +arg; go('exam'); break;
+    case 'examStart': examStart(+arg); break;
+    case 'resumeExam': { const R = DB.examRun; if (R.phase === 'q' || R.phase === 'edit') enterExamQ(); go('exam'); break; }
+    case 'pauseExam': { const R = DB.examRun; if (R.phase === 'q' || R.phase === 'edit') { R.sections[R.cur].times[R.qi] += (Date.now() - ui.qStart) / 1000; if (R.phase === 'q') R.sections[R.cur].ans[R.qi] = ui.cur.a; } save(); ui.step = R.step; go('home'); break; }
+    case 'mark': { const S = DB.examRun.sections[DB.examRun.cur], i = DB.examRun.qi, k = S.marks.indexOf(i); if (k < 0) S.marks.push(i); else S.marks.splice(k, 1); el.classList.toggle('on'); el.textContent = k < 0 ? 'Marquée' : 'Marquer'; save(); break; }
+    case 'exValidate': exValidate(); break;
+    case 'rvOpen': rvOpen(arg); break;
+    case 'rvBack': rvBack(); break;
+    case 'endSection': if (confirm('Terminer la section ? Vous ne pourrez plus revenir sur ces questions.')) endSection(); break;
+    case 'takeBreak': DB.examRun.phase = 'break'; DB.examRun.breakRemaining = BREAK_TIME; save(); render(); break;
+    case 'skipBreak': DB.examRun.phase = 'q'; enterExamQ(); save(); render(); break;
+    case 'endBreak': endBreak(); break;
+    case 'showExam': go('examResult', { result: arg }); break;
+    case 'addOfficial': addOfficial(); break;
+    case 'delOfficial': if (confirm('Supprimer ce score ?')) { DB.official = DB.official.filter(o => o.id !== arg); save(); go('official'); } break;
+    case 'export': {
+      const blob = new Blob([JSON.stringify(DB, null, 2)], { type: 'application/json' }), url = URL.createObjectURL(blob);
+      const link = document.createElement('a'); link.href = url; link.download = `gmat-academy-${new Date().toISOString().slice(0, 10)}.json`; document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url); break; }
+    case 'reset': if (confirm('Effacer toutes les données (réponses, examens, scores officiels) ? Cette action est définitive.')) { DB = freshDB(); save(); ui.step = null; go('home'); } break;
+  }
+});
+document.addEventListener('change', e => {
+  const s = e.target.closest('select[data-item]'); if (!s || !ui.cur) return;
+  const q = QMAP[ui.cur.qid]; if (ui.cur.locked) return;
+  const a = Array.isArray(ui.cur.a) ? ui.cur.a.slice() : q.items.map(() => null);
+  a[+s.dataset.item] = s.value === '' ? null : +s.value; ui.cur.a = a; refreshPicks(q);
+});
+document.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.node')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+});
+let lastCols = null;
+window.addEventListener('resize', () => { const c = window.innerWidth < 700 ? 2 : 4; if (ui.view === 'home' && c !== ui.cols) render(); });
+
+load(); render();
+
+</script>
+</body>
+</html>
